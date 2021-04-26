@@ -1,0 +1,181 @@
+syn.queue_on_teleport(readfile'Ulisse/Scripts/ABACoinfarm.lua')
+if not game:IsLoaded() then
+	game.Loaded:Wait()
+end
+if game.PlaceId==5411459567 or game.PlaceId==1458767429 then	
+	local Players=game:service'Players'
+	local HttpService=game:service'HttpService'
+	local TeleportService=game:service'TeleportService'
+	local ReplicatedStorage=game:service'ReplicatedStorage'
+	local VirtualUser=game:service'VirtualUser'
+	local LocalPlayer=Players.LocalPlayer
+	local BP
+	local function GetServers(PlaceId, Cursor)
+		if not PlaceId then
+			PlaceId=1458767429
+		end
+		local Request=syn.request({
+			Url=string.format('https://games.roblox.com/v1/games/%s/servers/Public?sortOrder=Asc&limit=100'..(Cursor and '&cursor=' .. Cursor or ''), tostring(PlaceId));
+			Method='GET';
+		})
+		if Request and Request.Success then
+			return HttpService:JSONDecode(Request.Body)
+		end
+	end
+
+	local function GetSmallest()
+		local Servers={}
+		local Cursor
+		repeat
+			local GotServers=GetServers(PlaceId, Cursor)
+			if GotServers and GotServers.data then
+				for i,v in ipairs(GotServers.data) do
+					table.insert(Servers, v)
+				end
+				Cursor = GotServers.nextPageCursor
+			else
+				Cursor=nil
+			end
+		until not Cursor
+		local Server
+		local Lowest=1e5
+		for i,v in ipairs(Servers) do
+			if v.playing and v.playing>=1 and v.playing<Lowest then
+				Lowest=v.playing
+				Server=v
+			end
+		end
+		return Server, Lowest
+	end
+
+	local function CallTeleport()
+		local Server,Lowest=GetSmallest()
+		if Server and Server.id and Lowest then
+			rconsoleprint(string.format('Server: %s Playing: [%s]\n', Server.id, Lowest))
+			TeleportService:TeleportToPlaceInstance(1458767429, Server.id)
+		end
+		wait(2)
+		CallTeleport()
+	end
+
+	repeat wait()
+	BP=LocalPlayer.Backpack
+	until LocalPlayer.Backpack
+	local PlayerGui
+	repeat wait()
+	PlayerGui=LocalPlayer.PlayerGui
+	until LocalPlayer.PlayerGui
+	local Chat=ReplicatedStorage:WaitForChild'DefaultChatSystemChatEvents':WaitForChild'SayMessageRequest'
+	local Loaded=ReplicatedStorage:WaitForChild('Loaded',15)
+	local HUD
+	local LastInt=0
+
+	LocalPlayer.Idled:Connect(function()
+	   VirtualUser:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+	   wait(1)
+	   VirtualUser:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+	end)
+
+	local function StartLives()
+		local Traits=BP:FindFirstChild'ServerTraits'
+		if Traits then
+			local Input=Traits:FindFirstChild'Input'
+			if Input then
+				rconsoleprint'Voted for lives\n'
+				local Payload={'mode', {choice='Lives'}}
+				Input:FireServer(unpack(Payload))
+				wait(6)
+			end
+		end
+	end
+
+	if game.PlaceId==5411459567 then
+		CallTeleport()
+	end
+
+	local function CheckPlayers()
+		local Count=0
+		for i,v in ipairs(Players:GetPlayers()) do
+			if v~=LocalPlayer then
+				local AFK=v:FindFirstChild'AFK'
+				if AFK and (not AFK.Value) then
+					Count+=1
+				end
+			end
+		end
+		if Count>1 then
+			rconsoleprint('AFK Count '..tostring(Count)..'>1\n')
+			CallTeleport()
+		end
+	end
+
+	coroutine.wrap(function()
+		if not Loaded then
+			rconsoleprint'No loaded???\n'
+		end
+		if Loaded then
+			Loaded:FireServer()
+		end
+		delay(10, function()
+			game:service'ReplicatedStorage'.Loaded:FireServer()
+		end)
+		HUD=PlayerGui:WaitForChild('HUD',10)
+		local RandomStr='afk'
+		if shared.ChatTroll then
+			local String = game:HttpGet'https://pastebin.com/raw/0DmvhYvd'
+			local StringTable = {}
+			local LastIndex = 1
+			for i = 1,#String do
+				if String:sub(i,i) == "." then
+					table.insert(StringTable,String:sub(LastIndex,i))
+					LastIndex = i+1
+				end
+			end
+			while true do
+				for i,v in pairs(StringTable) do
+					Chat:FireServer(RandomStr, 'All')
+					wait(2.5)
+				end
+			end
+		end
+	end)()
+
+	while true do
+		CheckPlayers()
+		if PlayerGui:FindFirstChild'HUD' then
+			local MyAFK=LocalPlayer:FindFirstChild'AFK'
+			if MyAFK and (not MyAFK.Value) then
+				local Traits=BP:FindFirstChild'ServerTraits'
+				if Traits then
+					local AFK=Traits:FindFirstChild'AFK'
+					if AFK then
+						AFK:FireServer(true)
+						wait(.5)
+					end
+				end
+			end
+		end
+		local Voting=PlayerGui:FindFirstChild'Voting'
+		if Voting then
+			local Mode1=Voting:FindFirstChild'mode1'
+			local Mode2=Voting:FindFirstChild'mode2'
+			if Mode1 and Mode2 then
+				local TL1=Mode1:FindFirstChild'TextLabel'
+				local TL2=Mode2:FindFirstChild'TextLabel'
+				if TL1 and TL2 then
+					if TL1.Text=='Lives' then
+						wait(1)
+						StartLives()
+					elseif TL2.Text=='Lives' then
+						wait(1)
+						StartLives()
+					else
+						rconsoleprint'Voted\n'
+						CallTeleport()
+					end
+				end
+			end
+		end
+		wait(1)
+	end
+end 
