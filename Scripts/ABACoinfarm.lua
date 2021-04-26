@@ -104,14 +104,14 @@ if game.PlaceId==5411459567 or game.PlaceId==1458767429 then
 			end
 		end
 		if Count>1 then
-			rconsoleprint('AFK Count '..tostring(Count)..'>1\n')
+			rconsoleprint('Players that arent afk: '..tostring(Count)..'>1\n')
 			CallTeleport()
 		end
 	end
 
 	coroutine.wrap(function()
 		if not Loaded then
-			rconsoleprint'No loaded???\n'
+			rconsoleprint'Not loaded???\n'
 		end
 		if Loaded then
 			Loaded:FireServer()
@@ -170,7 +170,7 @@ if game.PlaceId==5411459567 or game.PlaceId==1458767429 then
 						wait(1)
 						StartLives()
 					else
-						rconsoleprint'Voted\n'
+						rconsoleprint'Lives gamemode not found, teleporting.\n'
 						CallTeleport()
 					end
 				end

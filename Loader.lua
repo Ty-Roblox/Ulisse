@@ -108,7 +108,6 @@ local function Update()
                     local Script=DownloadString(string.format('%s/Scripts/%s',RepoPath,Val))
                     if Script then
                         local Path=string.format('Ulisse/Scripts/%s',Val)
-                        OutputToConsole(string.format('Got Script: %s',Path))
                         writefile(string.format('Ulisse/Scripts/%s',Val), Script)
                     end
                 end
