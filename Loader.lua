@@ -119,7 +119,7 @@ local function Update()
 end
 
 local function Start()
-    rconsoletitle'Ulisse'
+    rconsolename'Ulisse'
     if UlisseFolderExists then
         local CurrentVersionFileExists=isfile'Ulisse/Ulisse.VERSION'
         if CurrentVersionFileExists then
