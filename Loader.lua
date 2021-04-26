@@ -60,8 +60,8 @@ local function Load()
                 for i,v in ipairs(CurrentGame) do
                     local ScrPath=string.format('Ulisse/Scripts/%s',v)
                     if isfile(ScrPath) then
+                        OutputToConsole(string.format('Running file: %s', ScrPath))
                         loadstring(readfile(ScrPath))()
-                        OutputToConsole(string.format('Ran file: %s',ScrPath))
                     else
                         OutputToConsole(string.format('File missing: %s',ScrPath))
                     end
@@ -119,6 +119,7 @@ local function Update()
 end
 
 local function Start()
+    rconsoletitle'Ulisse'
     if UlisseFolderExists then
         local CurrentVersionFileExists=isfile'Ulisse/Ulisse.VERSION'
         if CurrentVersionFileExists then
