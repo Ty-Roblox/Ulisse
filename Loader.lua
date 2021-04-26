@@ -26,12 +26,14 @@ local function Debugp(...)
 end
 
 getgenv().OutputToConsole=function(...)
-    local Args={...}
-    for i,v in pairs(Args) do 
-        Args[i]=tostring(v)
+    if not shared.StopOutput then
+        local Args={...}
+        for i,v in pairs(Args) do 
+            Args[i]=tostring(v)
+        end
+        local PrintStr=table.concat(Args, '    ')
+        rconsoleprint(string.format('%s\n', PrintStr))
     end
-    local PrintStr=table.concat(Args, '    ')
-    rconsoleprint(string.format('%s\n', PrintStr))
 end
 
 getgenv().DownloadString=function(Path)
@@ -119,7 +121,9 @@ local function Update()
 end
 
 local function Start()
-    rconsolename'Ulisse'
+    if not shared.StopOutput then
+        rconsolename'Ulisse'
+    end
     if UlisseFolderExists then
         local CurrentVersionFileExists=isfile'Ulisse/Ulisse.VERSION'
         if CurrentVersionFileExists then

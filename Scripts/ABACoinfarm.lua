@@ -8,6 +8,7 @@ if game.PlaceId==5411459567 or game.PlaceId==1458767429 then
 	local TeleportService=game:service'TeleportService'
 	local ReplicatedStorage=game:service'ReplicatedStorage'
 	local VirtualUser=game:service'VirtualUser'
+	local CoreGui=game:service'CoreGui'
 	local LocalPlayer=Players.LocalPlayer
 	local BP
 	local function GetServers(PlaceId, Cursor)
@@ -56,6 +57,30 @@ if game.PlaceId==5411459567 or game.PlaceId==1458767429 then
 		end
 		wait(2)
 		CallTeleport()
+	end
+
+	local MainPrompt=CoreGui:FindFirstChild('promptOverlay', true)
+
+	local function Alert()
+		local CurrentTimeTable=os.date('*t', os.time())
+		rconsoleprint(string.format('Disconnected: [%s:%s](%s) Reconnecting\n',tostring(CurrentTimeTable.hour),tostring(CurrentTimeTable.min),tostring(CurrentTimeTable.sec)))
+		while true do
+			pcall(TeleportService.Teleport, TeleportService, LocalPlayer)
+			wait(2)
+		end
+	end
+
+	if MainPrompt then
+		if MainPrompt:FindFirstChild'ErrorPrompt' then
+			Alert()
+		end
+		MainPrompt.ChildAdded:Connect(function(Child)
+			if typeof(Child)=='Instance' and Child.Name=='ErrorPrompt' and Child.ClassName=='Frame' then
+				Alert()
+			end
+		end)
+	else
+		rconsoleprint'Error promptOverlay not found\n'
 	end
 
 	repeat wait()
