@@ -2,6 +2,7 @@ if not syn then --[[Sorry, this only supports synapse for now]]
     return
 end
 local HttpService=game:service'HttpService'
+local AssetService=game:service'AssetService'
 local RawServer='https://raw.githubusercontent.com'
 local Repo='Ty-Roblox/Ulisse'
 local Branch='main'
@@ -9,6 +10,9 @@ local VersionFileName='Version'
 local RepoPath=string.format('%s/%s/%s',RawServer,Repo,Branch)
 local UlisseFolderExists=isfolder'Ulisse'
 local IsDebug=false
+
+local Pages=AssetService:GetGamePlacesAsync()
+local Places={}
 
 local function Debugp(...)
     if IsDebug then
@@ -50,6 +54,32 @@ getgenv().DownloadString=function(Path)
     end
 end
 
+while true do
+	for i,v in ipairs(Pages:GetCurrentPage()) do
+		table.insert(Places, v.PlaceId)
+	end
+	if Pages.IsFinished then
+		break
+	end
+	Pages:AdvanceToNextPageAsync()
+end
+
+local function IsPlace()
+	for i,v in ipairs(Places) do
+		if v==game.PlaceId then
+			return v
+		end	
+	end
+end
+
+local function CheckTable(Table,Value)
+    for i,v in ipairs(Table) do
+        if v==Value then
+            return v
+        end
+    end
+end
+
 local function Load()
     Debugp'Load'
     local DecodedGameScripts=HttpService:JSONDecode(readfile'Ulisse/UlisseScripts.json')
@@ -58,7 +88,7 @@ local function Load()
         if UIFile then
             getgenv().UlisseUI=loadstring(readfile'Ulisse/UI.lua')()
             local CurrentGame=DecodedGameScripts[tostring(game.PlaceId)]
-            if CurrentGame then
+            if IsPlace() and CurrentGame then
                 for i,v in ipairs(CurrentGame) do
                     local ScrPath=string.format('Ulisse/Scripts/%s',v)
                     if isfile(ScrPath) then
@@ -104,13 +134,17 @@ local function Update()
         writefile('Ulisse/UlisseScripts.json', ManifestFile)
         local DecodedGameScripts=HttpService:JSONDecode(readfile'Ulisse/UlisseScripts.json')
         if DecodedGameScripts then
+            local Downloaded={}
             for i,v in pairs(DecodedGameScripts) do
                 for Idx,Val in ipairs(v) do
                     Debugp(Val)
-                    local Script=DownloadString(string.format('%s/Scripts/%s',RepoPath,Val))
-                    if Script then
-                        local Path=string.format('Ulisse/Scripts/%s',Val)
-                        writefile(string.format('Ulisse/Scripts/%s',Val), Script)
+                    if not CheckTable(Downloaded,Val) then
+                        table.insert(Downloaded, Val)
+                        local Script=DownloadString(string.format('%s/Scripts/%s',RepoPath,Val))
+                        if Script then
+                            local Path=string.format('Ulisse/Scripts/%s',Val)
+                            writefile(string.format('Ulisse/Scripts/%s',Val), Script)
+                        end
                     end
                 end
             end

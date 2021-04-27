@@ -54,7 +54,7 @@ if game.PlaceId==5411459567 or game.PlaceId==1458767429 then
 	local function CallTeleport()
 		local Server,Lowest=GetSmallest()
 		if Server and Server.id and Lowest then
-			rconsoleprint(string.format('Server: %s Playing: [%s]\n', Server.id, Lowest))
+			rconsoleprint(string.format('Joining Server: %s Playing: [%s]\n', Server.id, Lowest))
 			TeleportService:TeleportToPlaceInstance(1458767429, Server.id)
 		end
 		wait(2)
@@ -136,7 +136,7 @@ if game.PlaceId==5411459567 or game.PlaceId==1458767429 then
 				rconsoleprint'Voted for lives\n'
 				local Payload={'mode', {choice='Lives'}}
 				Input:FireServer(unpack(Payload))
-				wait(6)
+				wait(8)
 			end
 		end
 	end
