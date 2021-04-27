@@ -65,10 +65,12 @@ if game.PlaceId==5411459567 or game.PlaceId==1458767429 then
 		local HUD=PlayerGui:WaitForChild'HUD'
 		local CurrentMoney=0
 		local MoneyLabel=HUD:WaitForChild'Money'
+		wait(4)
 		if MoneyLabel then
 			local Money=tonumber(MoneyLabel.Text:sub(2))
 			if Money then
 				CurrentMoney=Money
+				rconsoleprint(string.format('Current Money: %i',Money))
 			end
 		end
 		wait(30)
@@ -77,6 +79,7 @@ if game.PlaceId==5411459567 or game.PlaceId==1458767429 then
 			local Money=tonumber(MoneyLabel.Text:sub(2))
 			if Money then
 				if Money>CurrentMoney then
+					rconsoleprint(string.format('Money After 30: %i',Money))
 					return
 				else
 					rconsoleprint'Money unchanged after 30 seconds, hopping\n'
