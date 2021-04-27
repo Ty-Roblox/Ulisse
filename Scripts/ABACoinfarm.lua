@@ -195,6 +195,31 @@ if game.PlaceId==5411459567 or game.PlaceId==1458767429 then
 		end
 	end)()
 
+	coroutine.wrap(function()
+		local HUD=PlayerGui:WaitForChild'HUD'
+		local CurrentMoney=0
+		local MoneyLabel=HUD:WaitForChild'Money'
+		if MoneyLabel then
+			local Money=tonumber(MoneyLabel.Text:sub(2))
+			if Money then
+				CurrentMoney=Money
+			end
+		end
+		wait(30)
+		local MoneyLabel=HUD:WaitForChild'Money'
+		if MoneyLabel then
+			local Money=tonumber(MoneyLabel.Text:sub(2))
+			if Money then
+				if Money>CurrentMoney then
+					return
+				else
+					rconsoleprint'Money unchanged after 30 seconds, hopping\n'
+					CallTeleport()
+				end
+			end
+		end
+	end)()
+
 	while true do
 		local HUD=PlayerGui:FindFirstChild'HUD'
 		if HUD then
