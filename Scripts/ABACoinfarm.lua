@@ -1,8 +1,8 @@
-syn.queue_on_teleport(readfile'Ulisse/Scripts/ABACoinfarm.lua')
 if not game:IsLoaded() then
 	game.Loaded:Wait()
 end
 if game.PlaceId==5411459567 or game.PlaceId==1458767429 then	
+	syn.queue_on_teleport(readfile'Ulisse/Scripts/ABACoinfarm.lua')
 	local Players=game:service'Players'
 	local HttpService=game:service'HttpService'
 	local TeleportService=game:service'TeleportService'
@@ -10,7 +10,9 @@ if game.PlaceId==5411459567 or game.PlaceId==1458767429 then
 	local VirtualUser=game:service'VirtualUser'
 	local CoreGui=game:service'CoreGui'
 	local LocalPlayer=Players.LocalPlayer
+	local PlayerGui=LocalPlayer.PlayerGui
 	local BP
+	local Joined=0
 	local function GetServers(PlaceId, Cursor)
 		if not PlaceId then
 			PlaceId=1458767429
@@ -58,6 +60,31 @@ if game.PlaceId==5411459567 or game.PlaceId==1458767429 then
 		wait(2)
 		CallTeleport()
 	end
+
+	coroutine.wrap(function()
+		local HUD=PlayerGui:WaitForChild'HUD'
+		local CurrentMoney=0
+		local MoneyLabel=HUD:WaitForChild'Money'
+		if MoneyLabel then
+			local Money=tonumber(MoneyLabel.Text:sub(2))
+			if Money then
+				CurrentMoney=Money
+			end
+		end
+		wait(30)
+		local MoneyLabel=HUD:WaitForChild'Money'
+		if MoneyLabel then
+			local Money=tonumber(MoneyLabel.Text:sub(2))
+			if Money then
+				if Money>CurrentMoney then
+					return
+				else
+					rconsoleprint'Money unchanged after 30 seconds, hopping\n'
+					CallTeleport()
+				end
+			end
+		end
+	end)()
 
 	local MainPrompt=CoreGui:FindFirstChild('promptOverlay', true)
 
@@ -166,8 +193,8 @@ if game.PlaceId==5411459567 or game.PlaceId==1458767429 then
 	end)()
 
 	while true do
-		CheckPlayers()
-		if PlayerGui:FindFirstChild'HUD' then
+		local HUD=PlayerGui:FindFirstChild'HUD'
+		if HUD then
 			local MyAFK=LocalPlayer:FindFirstChild'AFK'
 			if MyAFK and (not MyAFK.Value) then
 				local Traits=BP:FindFirstChild'ServerTraits'
@@ -180,6 +207,7 @@ if game.PlaceId==5411459567 or game.PlaceId==1458767429 then
 				end
 			end
 		end
+		CheckPlayers()
 		local Voting=PlayerGui:FindFirstChild'Voting'
 		if Voting then
 			local Mode1=Voting:FindFirstChild'mode1'
