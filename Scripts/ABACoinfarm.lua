@@ -139,7 +139,7 @@ if game.PlaceId==5411459567 or game.PlaceId==1458767429 then
 				rconsoleprint'Voted for lives\n'
 				local Payload={'mode', {choice='Lives'}}
 				Input:FireServer(unpack(Payload))
-				wait(8)
+				wait(3)
 			end
 		end
 	end
@@ -190,31 +190,6 @@ if game.PlaceId==5411459567 or game.PlaceId==1458767429 then
 				for i,v in pairs(StringTable) do
 					Chat:FireServer(RandomStr, 'All')
 					wait(2.5)
-				end
-			end
-		end
-	end)()
-
-	coroutine.wrap(function()
-		local HUD=PlayerGui:WaitForChild'HUD'
-		local CurrentMoney=0
-		local MoneyLabel=HUD:WaitForChild'Money'
-		if MoneyLabel then
-			local Money=tonumber(MoneyLabel.Text:sub(2))
-			if Money then
-				CurrentMoney=Money
-			end
-		end
-		wait(30)
-		local MoneyLabel=HUD:WaitForChild'Money'
-		if MoneyLabel then
-			local Money=tonumber(MoneyLabel.Text:sub(2))
-			if Money then
-				if Money>CurrentMoney then
-					return
-				else
-					rconsoleprint'Money unchanged after 30 seconds, hopping\n'
-					CallTeleport()
 				end
 			end
 		end
