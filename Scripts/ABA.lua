@@ -15,6 +15,16 @@ if not MainPrompt then
         Stepped:Wait()
     until MainPrompt
 end
+
+MainPrompt.ChildAdded:Connect(function(Child)
+    if typeof(Child)=='Instance' and Child.Name=='ErrorPrompt' and Child.ClassName=='Frame' then
+        Ulisse:SetColor'red'
+        Ulisse:PrintConsole'ErrorPrompt Found, Teleport called'
+        Ulisse:SetColor()
+        CallTeleport()
+    end
+end)
+
 if not game:IsLoaded() then
 	game.Loaded:Wait()
 end
@@ -31,6 +41,11 @@ if not PlayerGui then
         Stepped:Wait()
     until PlayerGui
 end
+
+LocalPlayer.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
 
 local function GetServers(PlaceId, Cursor)
     if not PlaceId then
@@ -81,20 +96,6 @@ local function CallTeleport()
     wait(2)
     CallTeleport()
 end
-
-LocalPlayer.Idled:Connect(function()
-    VirtualUser:CaptureController()
-    VirtualUser:ClickButton2(Vector2.new())
-end)
-
-MainPrompt.ChildAdded:Connect(function(Child)
-    if typeof(Child)=='Instance' and Child.Name=='ErrorPrompt' and Child.ClassName=='Frame' then
-        Ulisse:SetColor'red'
-        Ulisse:PrintConsole'ErrorPrompt Found, Teleport called'
-        Ulisse:SetColor()
-        CallTeleport()
-    end
-end)
 
 local function Play()
     if LocalPlayer:FindFirstChild'Loaded' then

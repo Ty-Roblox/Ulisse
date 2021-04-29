@@ -112,7 +112,7 @@ local function Load()
                 for i,v in ipairs(CurrentGame) do
                     local ScrPath=string.format('Ulisse/Scripts/%s',v)
                     if isfile(ScrPath) then
-                        SetColor'green'
+                        SetColor'magenta'
                         OutputToConsole(string.format('Running file: %s', ScrPath))
                         SetColor()
                         loadstring(readfile(ScrPath))()
