@@ -1,6 +1,7 @@
 if not game:IsLoaded() then
 	game.Loaded:Wait()
 end
+syn.queue_on_teleport(readfile'Ulisse/Scripts/Vesteria.lua')
 rconsolename'Ulisse'
 local Players=game:service'Players'
 local ReplicatedStorage=game:service'ReplicatedStorage'
