@@ -85,8 +85,13 @@ local function Load()
     local DecodedGameScripts=HttpService:JSONDecode(readfile'Ulisse/UlisseScripts.json')
     if DecodedGameScripts then
         local UIFile=isfile'Ulisse/UI.lua'
-        if UIFile then
-            getgenv().UlisseUI=loadstring(readfile'Ulisse/UI.lua')()
+        local EnvFile=isfile'Ulisse/Env.lua'
+        if EnvFile then
+            local Env=readfile'Ulisse/Env.lua'
+            loadstring(Env)()
+            syn.queue_on_teleport(Env)
+        end
+        if UIFile and EnvFile then
             local CurrentGame=DecodedGameScripts[tostring(game.PlaceId)]
             if IsPlace() and CurrentGame then
                 for i,v in ipairs(CurrentGame) do
@@ -102,7 +107,7 @@ local function Load()
                 OutputToConsole'No scripts for game found'
             end
         else
-            OutputToConsole'UI file missing..?'
+            OutputToConsole'UI file missing..? / Env file missing'
         end
     else
         OutputToConsole'Failed to run, try again..?'
@@ -128,6 +133,10 @@ local function Update()
     local UiFile=DownloadString(string.format('%s/%s',RepoPath,'UI.lua'))
     if UiFile then
         writefile('Ulisse/UI.lua', UiFile)
+    end
+    local EnvFile=DownloadString(string.format('%s/%s',RepoPath,'Env.lua'))
+    if EnvFile then
+        writefile('Ulisse/Env.lua', EnvFile)
     end
     local ManifestFile=DownloadString(string.format('%s/Scripts.json',RepoPath))
     if ManifestFile then
