@@ -44,7 +44,10 @@ getgenv().DownloadString=function(Path)
     OutputToConsole(string.format('Downloading: %s',Path))
     local Request=syn.request({
         Url=Path,
-        Method='GET'
+        Method='GET',
+        Headers={
+            ['Cache-Control']='private, no-store, max-age=0';
+        }
     })
     if Request and Request.Success then
         Debugp('Request Success', Path)
