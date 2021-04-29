@@ -46,7 +46,9 @@ getgenv().DownloadString=function(Path)
         Url=Path,
         Method='GET',
         Headers={
-            ['Cache-Control']='private, no-store, max-age=0';
+            ['Cache-Control']='no-cache, no-store, max-age=0, must-revalidate';
+            ['Pragma']='no-cache';
+            ['Expires']='-1';
         }
     })
     if Request and Request.Success then
