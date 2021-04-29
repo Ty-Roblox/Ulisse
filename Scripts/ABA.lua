@@ -73,7 +73,9 @@ end
 local function CallTeleport()
     local Server,Lowest=GetSmallest()
     if Server and Server.id and Lowest then
+        Ulisse:SetColor'yellow'
         Ulisse:PrintConsole(string.format('Joining Server: %s Playing: [%s]', Server.id, Lowest))
+        Ulisse:SetColor()
         TeleportService:TeleportToPlaceInstance(1458767429, Server.id)
     end
     wait(2)
@@ -87,7 +89,9 @@ end)
 
 MainPrompt.ChildAdded:Connect(function(Child)
     if typeof(Child)=='Instance' and Child.Name=='ErrorPrompt' and Child.ClassName=='Frame' then
+        Ulisse:SetColor'red'
         Ulisse:PrintConsole'ErrorPrompt Found, Teleport called'
+        Ulisse:SetColor()
         CallTeleport()
     end
 end)
@@ -108,7 +112,10 @@ local function Play()
         Stepped:Wait()
     until PlayButton
     if not PlayButton then
+        Ulisse:SetColor'red'
         Ulisse:PrintConsole'PlayButton not found, err'
+        Ulisse:SetColor()
+        CallTeleport()
         return
     end
     repeat
@@ -130,6 +137,10 @@ local function CheckPlayers()
     if Count>1 then
         Ulisse:PrintConsole('Non AFK Players: '..tostring(Count)..'>1')
         CallTeleport()
+    else
+        Ulisse:SetColor'green'
+        Ulisse:PrintConsole'Potential server found'
+        Ulisse:SetColor()
     end
 end
 
@@ -150,10 +161,14 @@ local function CheckMoney()
         local Money=tonumber(MoneyLabel.Text:sub(2))
         if Money then
             if Money>CurrentMoney then
+                Ulisse:SetColor'green'
                 Ulisse:PrintConsole(string.format('Money After 45: %i',Money))
+                Ulisse:SetColor()
                 return
             else
+                Ulisse:SetColor'red'
                 Ulisse:PrintConsole'Money unchanged after 45 seconds, hopping'
+                Ulisse:SetColor()
                 CallTeleport()
             end
         end
@@ -192,7 +207,9 @@ while true do
                     wait(.5)
                     Ulisse:ClickButton(TL2)
                 else
+                    Ulisse:SetColor'red'
                     Ulisse:PrintConsole'Lives gamemode not found, teleporting.'
+                    Ulisse:SetColor()
                     CallTeleport()
                 end
             end

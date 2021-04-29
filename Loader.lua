@@ -41,7 +41,7 @@ getgenv().OutputToConsole=function(...)
 end
 
 getgenv().DownloadString=function(Path)
-    SetColor'light_green'
+    SetColor'light_cyan'
     OutputToConsole(string.format('Downloading: %s',Path))
     SetColor()
     local Request=syn.request({
