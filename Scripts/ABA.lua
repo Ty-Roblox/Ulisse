@@ -9,6 +9,7 @@ local Stepped=RunService.Stepped
 local MainPrompt=CoreGui:FindFirstChild('promptOverlay', true)
 local LocalPlayer=Players.LocalPlayer
 local PlayerGui=LocalPlayer.PlayerGui
+syn.queue_on_teleport(readfile'Ulisse/Scripts/ABA.lua')
 if not MainPrompt then
     repeat 
         MainPrompt=CoreGui:FindFirstChild('promptOverlay', true)
