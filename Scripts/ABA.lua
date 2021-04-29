@@ -94,12 +94,15 @@ local function Play()
     end
     local MainMenu=PlayerGui:WaitForChild'MainMenu'
     local PlayButton
-    for i,v in ipairs(MainMenu:GetChildren()) do
-        if v:IsA'GuiButton' and v.Text=='PLAY' then 
-            PlayButton=v
-            break
+    repeat
+        for i,v in ipairs(MainMenu:GetChildren()) do
+            if v:IsA'GuiButton' and v.Text=='PLAY' then 
+                PlayButton=v
+                break
+            end
         end
-    end
+        Stepped:Wait()
+    until PlayButton
     if not PlayButton then
         Ulisse:PrintConsole'PlayButton not found, err'
         return
@@ -153,14 +156,13 @@ local function CheckMoney()
     end
 end
 
+if not game:IsLoaded() then
+	game.Loaded:Wait()
+end
 if game.PlaceId==5411459567 then
     CallTeleport()
 end
-
-if not LocalPlayer:FindFirstChild'Loaded' then
-    Play()
-end
-
+Play()
 coroutine.wrap(CheckMoney)()
 
 while true do
