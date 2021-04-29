@@ -144,16 +144,16 @@ local function CheckMoney()
             Ulisse:PrintConsole(string.format('Current Money: %i',Money))
         end
     end
-    wait(30)
+    wait(45)
     local MoneyLabel=HUD:WaitForChild'Money'
     if MoneyLabel then
         local Money=tonumber(MoneyLabel.Text:sub(2))
         if Money then
             if Money>CurrentMoney then
-                Ulisse:PrintConsole(string.format('Money After 30: %i',Money))
+                Ulisse:PrintConsole(string.format('Money After 45: %i',Money))
                 return
             else
-                Ulisse:PrintConsole'Money unchanged after 30 seconds, hopping'
+                Ulisse:PrintConsole'Money unchanged after 45 seconds, hopping'
                 CallTeleport()
             end
         end
