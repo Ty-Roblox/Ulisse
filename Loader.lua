@@ -176,8 +176,8 @@ local function Start()
         local CurrentVersionFileExists=isfile'Ulisse/Ulisse.VERSION'
         if CurrentVersionFileExists then
             local CurrentVersion=readfile'Ulisse/Ulisse.VERSION'
-            OutputToConsole(string.format('Ulisse Version: %s',CurrentVersion))
             local ServerVersion=DownloadString(string.format('%s/%s',RepoPath,VersionFileName))
+            OutputToConsole(string.format('Client Version: %s, Server Version: %s',CurrentVersion,ServerVersion))
             if ServerVersion and CurrentVersion==ServerVersion then
                 Load()
             else
