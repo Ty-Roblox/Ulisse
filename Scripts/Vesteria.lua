@@ -144,7 +144,7 @@ while true do
                 for i,v in ipairs(Mobs:GetChildren()) do
                     if v:IsA'BasePart' then
                         local Mag=(HRP.Position-v.Position).Magnitude
-                        if Mag<19 then
+                        if Mag<20 then
                             coroutine.wrap(Damage)(v)
                         end
                     end
@@ -165,7 +165,7 @@ while true do
                     end 
                     if IsOwner and PartObject then
                         local Mag=(HRP.Position-PartObject.Position).Magnitude
-                        if Mag<28 then
+                        if Mag<30 then
                             coroutine.wrap(PickupRem.InvokeServer)(PickupRem, v)
                         end
                     end
