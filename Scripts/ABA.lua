@@ -107,9 +107,9 @@ local function Play()
         Ulisse:PrintConsole'PlayButton not found, err'
         return
     end
-    Ulisse:ClickButton(PlayButton)
-    repeat 
-        Stepped:Wait()
+    repeat
+        Ulisse:ClickButton(PlayButton) 
+        wait(.5)
     until LocalPlayer:FindFirstChild'Loaded'
 end
 
