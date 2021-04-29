@@ -15,6 +15,9 @@ if not MainPrompt then
         Stepped:Wait()
     until MainPrompt
 end
+if not game:IsLoaded() then
+	game.Loaded:Wait()
+end
 if not LocalPlayer then
     repeat 
         LocalPlayer=Players.LocalPlayer
@@ -157,9 +160,6 @@ local function CheckMoney()
     end
 end
 
-if not game:IsLoaded() then
-	game.Loaded:Wait()
-end
 if game.PlaceId==5411459567 then
     CallTeleport()
 end
