@@ -73,7 +73,7 @@ end
 local function CallTeleport()
     local Server,Lowest=GetSmallest()
     if Server and Server.id and Lowest then
-        rconsoleprint(string.format('Joining Server: %s Playing: [%s]\n', Server.id, Lowest))
+        Ulisse:PrintConsole(string.format('Joining Server: %s Playing: [%s]', Server.id, Lowest))
         TeleportService:TeleportToPlaceInstance(1458767429, Server.id)
     end
     wait(2)
@@ -128,7 +128,7 @@ local function CheckPlayers()
         end
     end
     if Count>1 then
-        Ulisse:PrintConsole('Non AFK Players: '..tostring(Count)..'>1\n')
+        Ulisse:PrintConsole('Non AFK Players: '..tostring(Count)..'>1')
         CallTeleport()
     end
 end
@@ -141,7 +141,7 @@ local function CheckMoney()
         local Money=tonumber(MoneyLabel.Text:sub(2))
         if Money then
             CurrentMoney=Money
-            Ulisse:PrintConsole(string.format('Current Money: %i\n',Money))
+            Ulisse:PrintConsole(string.format('Current Money: %i',Money))
         end
     end
     wait(30)
@@ -150,10 +150,10 @@ local function CheckMoney()
         local Money=tonumber(MoneyLabel.Text:sub(2))
         if Money then
             if Money>CurrentMoney then
-                Ulisse:PrintConsole(string.format('Money After 30: %i\n',Money))
+                Ulisse:PrintConsole(string.format('Money After 30: %i',Money))
                 return
             else
-                Ulisse:PrintConsole'Money unchanged after 30 seconds, hopping\n'
+                Ulisse:PrintConsole'Money unchanged after 30 seconds, hopping'
                 CallTeleport()
             end
         end
@@ -192,7 +192,7 @@ while true do
                     wait(.5)
                     Ulisse:ClickButton(TL2)
                 else
-                    rconsoleprint'Lives gamemode not found, teleporting.\n'
+                    Ulisse:PrintConsole'Lives gamemode not found, teleporting.'
                     CallTeleport()
                 end
             end
