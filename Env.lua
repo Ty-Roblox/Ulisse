@@ -31,6 +31,14 @@ function Env:PrintConsole(...)
     end
 end
 
+function Env:SetColor(Color) 
+	if not Color or typeof(Color)~='string' then
+		Color='WHITE'
+	end
+	Color=string.upper(Color)
+	rconsoleprint('@@'..Color..'@@')
+end
+
 if isfile'Ulisse/Env.lua' then
     syn.queue_on_teleport(readfile'Ulisse/Env.lua')
 end

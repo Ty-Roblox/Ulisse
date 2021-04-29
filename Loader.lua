@@ -41,7 +41,9 @@ getgenv().OutputToConsole=function(...)
 end
 
 getgenv().DownloadString=function(Path)
+    SetColor'light_green'
     OutputToConsole(string.format('Downloading: %s',Path))
+    SetColor()
     local Request=syn.request({
         Url=Path,
         Method='GET',
@@ -57,6 +59,14 @@ getgenv().DownloadString=function(Path)
     else
         Debugp('Request Failed', Path, Request.StatusMessage, Request.StatusCode)
     end
+end
+
+getgenv().SetColor=function(Color) 
+	if not Color or typeof(Color)~='string' then
+		Color='WHITE'
+	end
+	Color=string.upper(Color)
+	rconsoleprint('@@'..Color..'@@')
 end
 
 while true do
@@ -102,25 +112,37 @@ local function Load()
                 for i,v in ipairs(CurrentGame) do
                     local ScrPath=string.format('Ulisse/Scripts/%s',v)
                     if isfile(ScrPath) then
+                        SetColor'green'
                         OutputToConsole(string.format('Running file: %s', ScrPath))
+                        SetColor()
                         loadstring(readfile(ScrPath))()
                     else
+                        SetColor'red'
                         OutputToConsole(string.format('File missing: %s',ScrPath))
+                        SetColor()
                     end
                 end
             else
+                SetColor'red'
                 OutputToConsole'No scripts for game found'
+                SetColor()
             end
         else
+            SetColor'red'
             OutputToConsole'UI file missing..? / Env file missing'
+            SetColor()
         end
     else
+        SetColor'red'
         OutputToConsole'Failed to run, try again..?'
+        SetColor()
     end
 end
 
 local function Update()
+    SetColor'green'
     OutputToConsole('New version detected/Files not found, Updating!')
+    SetColor()
     Debugp'Update Called'
     if UlisseFolderExists then
         Debugp'Folder removed'
@@ -164,7 +186,9 @@ local function Update()
             end
         end
     end
+    SetColor'green'
     OutputToConsole('Done, Loading now.')
+    SetColor()
     Load()
 end
 
@@ -177,7 +201,9 @@ local function Start()
         if CurrentVersionFileExists then
             local CurrentVersion=readfile'Ulisse/Ulisse.VERSION'
             local ServerVersion=DownloadString(string.format('%s/%s',RepoPath,VersionFileName))
+            SetColor'yellow'
             OutputToConsole(string.format('Client Version: %s, Server Version: %s',CurrentVersion,ServerVersion))
+            SetColor()
             if ServerVersion and CurrentVersion==ServerVersion then
                 Load()
             else
