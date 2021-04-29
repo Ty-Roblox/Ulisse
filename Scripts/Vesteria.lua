@@ -111,10 +111,11 @@ local function AddESP(Obj)
     Distance.Parent = Holder
     table.insert(ESPs, {Obj, Gui, Distance, Name})
 end
+
 local function Damage(Obj)
     local HRP=(LocalPlayer.Character and LocalPlayer.Character.PrimaryPart) or nil
     if HRP and Obj:IsDescendantOf(workspace) then
-        AnimRem:FireServer('swordAnimations','strike1',{attackSpeed=0})
+        AnimRem:FireServer('swordAnimations','strike2',{attackSpeed=0})
         ReqRem:Fire(Obj, HRP.Position, 'equipment', nil, HttpService:GenerateGUID(false))
         DamageRem:FireServer(Obj, HRP.Position, 'equipment')
     end
@@ -135,7 +136,6 @@ Mobs.ChildAdded:Connect(function(Obj)
     CheckMob(v)
 end)
 
-warn'Done1'
 while true do
     if LocalPlayer.Character then
         local HRP=LocalPlayer.Character.PrimaryPart
