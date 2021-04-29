@@ -8,7 +8,6 @@ local RunService=game:service'RunService'
 local Stepped=RunService.Stepped
 local MainPrompt=CoreGui:FindFirstChild('promptOverlay', true)
 local LocalPlayer=Players.LocalPlayer
-local PlayerGui=LocalPlayer.PlayerGui
 syn.queue_on_teleport(readfile'Ulisse/Scripts/ABA.lua')
 if not MainPrompt then
     repeat 
@@ -22,6 +21,7 @@ if not LocalPlayer then
         Stepped:Wait()
     until LocalPlayer
 end
+local PlayerGui=LocalPlayer.PlayerGui
 if not PlayerGui then
     repeat 
         PlayerGui=LocalPlayer.PlayerGui
