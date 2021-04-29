@@ -138,10 +138,6 @@ local function CheckPlayers()
     if Count>1 then
         Ulisse:PrintConsole('Non AFK Players: '..tostring(Count)..'>1')
         CallTeleport()
-    else
-        Ulisse:SetColor'green'
-        Ulisse:PrintConsole'Potential server found'
-        Ulisse:SetColor()
     end
 end
 
