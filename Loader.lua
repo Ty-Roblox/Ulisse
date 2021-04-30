@@ -109,13 +109,18 @@ local function Load()
         if UIFile and EnvFile then
             local CurrentGame=DecodedGameScripts[tostring(game.PlaceId)]
             if IsPlace() and CurrentGame then
+                local UI=Ulisse.UI:Main()
+                local Tab=UI:Tab'P To Toggle'
+                local Section=Tab:Section'Section'
                 for i,v in ipairs(CurrentGame) do
                     local ScrPath=string.format('Ulisse/Scripts/%s',v)
                     if isfile(ScrPath) then
                         SetColor'magenta'
-                        OutputToConsole(string.format('Running file: %s', ScrPath))
+                        OutputToConsole(string.format('Got Script: %s', ScrPath))
                         SetColor()
-                        loadstring(readfile(ScrPath))()
+                        Section:Item('button', v, function()
+                            loadstring(readfile(ScrPath))()
+                        end)
                     else
                         SetColor'red'
                         OutputToConsole(string.format('File missing: %s',ScrPath))
