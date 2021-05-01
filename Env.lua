@@ -2,6 +2,7 @@ getgenv().Ulisse={}
 local Env=getgenv().Ulisse
 
 local Players=game:service'Players'
+local LocalPlayer=Players.LocalPlayer
 
 function Env:InsertTable(Table1, Table2)
     for i,v in ipairs(Table2) do
@@ -50,7 +51,8 @@ if isfile'Ulisse/UI.lua' then
 end
 
 repeat wait()
-until Players.LocalPlayer
+    LocalPlayer=Players.LocalPlayer
+until LocalPlayer
 
 for i,v in ipairs(getconnections(LocalPlayer.Idled)) do
     v:Disconnect()
