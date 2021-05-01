@@ -59,10 +59,10 @@ local function GetServers(PlaceId, Cursor)
         return HttpService:JSONDecode(Request.Body)
     end
 end
-
 local function GetSmallest()
     local Servers={}
     local Cursor
+    local iteration=0
     repeat
         local GotServers=GetServers(PlaceId, Cursor)
         if GotServers and GotServers.data then
@@ -73,7 +73,10 @@ local function GetSmallest()
         else
             Cursor=nil
         end
+        warn(Cursor,iteration)
+        iteration+=1
     until not Cursor
+    warn('Final',Cursor)
     local Server
     local Lowest=1e5
     for i,v in ipairs(Servers) do
