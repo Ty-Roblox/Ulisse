@@ -55,5 +55,7 @@ repeat wait()
 until LocalPlayer
 
 for i,v in ipairs(getconnections(LocalPlayer.Idled)) do
-    v:Disconnect()
+    if v.Connected then
+        v:Disconnect()
+    end
 end
