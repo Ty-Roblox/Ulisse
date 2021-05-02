@@ -63,7 +63,10 @@ local function CallTeleport()
         Ulisse:SetColor'yellow'
         Ulisse:PrintConsole(string.format('Joining Server: %s Playing: [%s]', Server.id, Lowest))
         Ulisse:SetColor()
-        TeleportService:TeleportToPlaceInstance(1458767429, Server.id)
+        for I=1,5 do
+            pcall(TeleportService.TeleportToPlaceInstance, TeleportService, 1458767429, Server.id)
+            wait(1)
+        end
     end
     wait(2)
     CallTeleport()
