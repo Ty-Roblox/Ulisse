@@ -100,7 +100,7 @@ end
 
 local function Load()
     Debugp'Load'
-    local DecodedGameScripts=HttpService:JSONDecode(readfile'Ulisse/UlisseScripts.json')
+    local DecodedGameScripts=HttpService:JSONDecode(readfile'Ulisse/Scripts.json')
     if DecodedGameScripts then
         local UIFile=isfile'Ulisse/UI.lua'
         local EnvFile=isfile'Ulisse/Env.lua'
