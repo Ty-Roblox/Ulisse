@@ -14,10 +14,23 @@ local CombatRemote=Events:WaitForChild'CombatRegister'
 local QuestRemote=Events:WaitForChild'Quest'
 local LocalPlayer=Players.LocalPlayer
 local HB=RunService.Heartbeat
+local Stepped=RunService.Stepped
 local Char=LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local Hum=Char:FindFirstChildOfClass'Humanoid'
 local HRP=Char:FindFirstChild'HumanoidRootPart' or Char.PrimaryPart
 local NPCFolder=workspace:WaitForChild'NPCs'
+
+local FFPart=Instance.new'Part'
+FFPart.Size=Vector3.new(8,.5,8)
+FFPart.Anchored=true
+FFPart.Material=Enum.Material.ForceField
+FFPart.Parent=workspace
+
+local AutofarmQuest=false
+local Tweening=nil
+local SelectedQuestGiver=nil
+local StartPos=nil
+local LastCalledQuest=tick()
 
 local function Weapon()
     if not Hum then
@@ -86,7 +99,15 @@ local function GetClosest(Name)
     return NPC
 end
 
-local QuestNPC=nil
+local function TweenTo(Pos) 
+    if Tweening then
+        Tweening:Cancel()
+        Tweening=nil
+    end
+    local Mag=(Pos.Position-HRP.Position).Magnitude
+    Tweening=TweenService:Create(HRP, TweenInfo.new((Mag/90),Enum.EasingStyle.Linear), {CFrame=Pos-Vector3.new(0,2,0)}):Play()
+end
+
 local function GetQuest(QuestGiver)
     local QuestGui=LocalPlayer.PlayerGui:FindFirstChild'Quest'
     if QuestGiver and QuestGui and HRP then
@@ -95,9 +116,21 @@ local function GetQuest(QuestGiver)
             local Q=QuestFrame:FindFirstChild'Q'
             if Q then
                 local Progress=Q:FindFirstChild'progress'
-                if Progress then
-                    local Questname=string.format('Help %s',string.lower(QuestGiver.Name))
-                    QuestRemote:InvokeServer('takequest', Questname)
+                if Progress and HRP then
+                    local QHRP=QuestGiver:FindFirstChild'HumanoidRootPart'
+                    local Mag=(HRP.Position-QHRP.Position).Magnitude
+                    if Mag<5 then
+                        if tick()-LastCalledQuest>16 then
+                            LastCalledQuest=tick()
+                            local Questname=string.format('Help %s',string.lower(QuestGiver.Name))
+                            warn(Questname)
+                            QuestRemote:InvokeServer({'takequest', Questname})
+                            warn'Take quest'
+                        end
+                    else
+                        TweenTo(QHRP.CFrame)
+                        warn'Tween'
+                    end
                 end
             end
         else
@@ -105,16 +138,12 @@ local function GetQuest(QuestGiver)
             if Q then
                 local Progress=Q:FindFirstChild'progress'
                 if Progress then
-                    QuestNPC=Progress.Text:gsub('[%(%)%/%d+]',''):sub(1, -2):sub(4)
+                    return Progress.Text:gsub('[%(%)%/%d+]',''):sub(1, -2):sub(4)
                 end
             end
         end
     end
 end
-
-local AutofarmQuest=false
-local Tweening=false
-local SelectedQuestGiver=nil
 
 local UI=Ulisse.UI:Main()
 local Tab=UI:Tab'P To Toggle'
@@ -122,7 +151,7 @@ local Section=Tab:Section'GPO'
 Section:Item('toggle','Killaura',function(v)
     shared.GPOEnabled=v
 end)
---[[
+
 Section:Item('toggle', 'Autofarm Quest',function(v)
     AutofarmQuest=v
 end)
@@ -130,9 +159,10 @@ Section:Item('button', 'Set Quest',function()
     local QuestGiver=GetQuestGiver()
     if QuestGiver and QuestGiver[2] then
         SelectedQuestGiver=QuestGiver[2]
+        StartPos=QuestGiver[1].CFrame+Vector3.new(0,2,0)
         print(SelectedQuestGiver.Name)
     end
-end)]]
+end)
 
 local HitType=1
 local LastAttack=tick()
@@ -140,8 +170,9 @@ local LastHit=tick()
 
 shared.CACon=LocalPlayer.CharacterAdded:Connect(function(NewChar)
     Char=NewChar
-    HRP=Char:FindFirstChild'HumanoidRootPart' or Char.PrimaryPart 
-    Hum=Char:FindFirstChildOfClass'Humanoid'
+    HRP=Char:WaitForChild'HumanoidRootPart' 
+    Hum=Char:WaitForChild'Humanoid'
+    warn('Newchar', Char, HRP, Hum)
 end)
 
 shared.HBCon=HB:Connect(function()
@@ -149,7 +180,7 @@ shared.HBCon=HB:Connect(function()
         local Target=GetClosest()
         if Target and Target[1] then
             local Mag=(Target[1].Position-HRP.Position).Magnitude
-            if Mag<=11 and tick()-LastAttack>=.35 and tick()-LastHit>=1.7 then
+            if Mag<=11 and tick()-LastAttack>=.35 and tick()-LastHit>=1.6 then
                 local Tool=Weapon()
                 if Tool and Tool.Parent==Char then
                     LastAttack=tick()
@@ -163,22 +194,43 @@ shared.HBCon=HB:Connect(function()
                 end
             end
         end
-        --[[
-        if AutofarmQuest and SelectedQuestGiver then
-            if Tweening then
-                Tweening:Cancel()
-                Tweening=nil
-            end
-            if (SelectedQuestGiver.HumanoidRootPart.Position-HRP.Position).Magnitude<8 then
-                GetQuest(SelectedQuestGiver)
-            end
-            if QuestNPC then
-                local TargetNPC=GetClosest(QuestNPC)
-                if TargetNPC then
-                    warn(TargetNPC[1],TargetNPC[2])
+        if AutofarmQuest then
+            FFPart.CFrame=HRP.CFrame*CFrame.new(0,-2.3,0)
+            if SelectedQuestGiver then
+                if Tweening then
+                    Tweening:Cancel()
+                    Tweening=nil
+                end
+                for i,v in ipairs(Char:GetChildren()) do
+                    pcall(function()
+                        if v:IsA'BasePart' then
+                            v.CanCollide=false
+                            v.Velocity=Vector3.new()
+                        end
+                    end)
+                end
+                local QuestNPC=GetQuest(SelectedQuestGiver)
+                if QuestNPC then
+                    local TargetNPC=GetClosest(QuestNPC)
+                    if TargetNPC and TargetNPC[1] then
+                        local Mag=(TargetNPC[1].Position-HRP.Position).Magnitude
+                        if Mag>30 then
+                            if Tweening then
+                                Tweening:Cancel()
+                                Tweening=nil
+                            end
+                            TweenTo(TargetNPC[1].CFrame)
+                        else
+                            HRP.CFrame=TargetNPC[1].CFrame*CFrame.new(0,.35,3)
+                        end
+                    else
+                        if StartPos then
+                            TweenTo(StartPos)
+                        end
+                    end
                 end
             end
-        end]]
+        end
     end
 end)
 
