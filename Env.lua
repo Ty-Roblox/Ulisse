@@ -46,6 +46,10 @@ if isfile'Ulisse/Env.lua' then
     syn.queue_on_teleport(readfile'Ulisse/Env.lua')
 end
 
+if isfile'Ulisse/MaterialUI.lua' then
+    Env.MaterialUI=loadstring(readfile'Ulisse/MaterialUI.lua')()
+end
+
 if isfile'Ulisse/UI.lua' then
     Env.UI=loadstring(readfile'Ulisse/UI.lua')()
 end
