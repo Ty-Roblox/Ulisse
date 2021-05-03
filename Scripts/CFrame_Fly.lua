@@ -1,3 +1,4 @@
+shared.CFlyEnabled=false
 local LocalPlayer=game:GetService'Players'.LocalPlayer
 local RS=game:GetService'RunService'.RenderStepped
 local UIS=game:GetService'UserInputService'
@@ -23,7 +24,7 @@ end
 getgenv().Connects={}
 Connects[#Connects+1]=UIS.InputBegan:Connect(function(Key,GC)
 	if GC then return end
-	if Key.KeyCode==Enum.KeyCode.G and not UIS:GetFocusedTextBox()then
+	if Key.KeyCode==Enum.KeyCode.C and not UIS:GetFocusedTextBox()then
 		local Ch=LocalPlayer.Character
 		if Ch then
 			local RootPart = Ch.PrimaryPart or Ch:FindFirstChild'HumanoidRootPart'
@@ -36,7 +37,7 @@ Connects[#Connects+1]=UIS.InputBegan:Connect(function(Key,GC)
 end)
 Connects[#Connects+1]=UIS.InputEnded:Connect(function(Key,GC)
 	if GC then return end
-	if Key.KeyCode==Enum.KeyCode.G then
+	if Key.KeyCode==Enum.KeyCode.C then
 		Enabled=false
 		CF=CFrame.new()
 	end
@@ -63,8 +64,9 @@ local function DisableClip(Part)
         Part.CanCollide = true
     end
 end
-Connects[#Connects+1]=RS:Connect(function()
-	local Ch=LocalPlayer.Character
+shared.CFlyEnabled=true
+while shared.CFlyEnabled do
+    local Ch=LocalPlayer.Character
 	if Enabled and Ch then
 		local RootPart = Ch.PrimaryPart or Ch:FindFirstChild'HumanoidRootPart'
 		if RootPart then
@@ -97,4 +99,5 @@ Connects[#Connects+1]=RS:Connect(function()
 			end
 		end
 	end
-end)
+    wait()
+end
