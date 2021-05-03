@@ -98,8 +98,68 @@ local function CheckTable(Table,Value)
     end
 end
 
+local function LoadFiles()
+    SetColor'green'
+    OutputToConsole('New version detected/Files not found, Updating!')
+    SetColor()
+    Debugp'Update Called'
+    if UlisseFolderExists then
+        Debugp'Folder removed'
+        delfolder'Ulisse'
+    end
+    makefolder'Ulisse'
+    local ScriptsFolder=isfolder'Ulisse/Scripts'
+    local VersionFile=DownloadString(string.format('%s/%s',RepoPath,VersionFileName))
+    if VersionFile then
+        writefile('Ulisse/Ulisse.VERSION', VersionFile)
+    end
+    if not ScriptsFolder then
+        makefolder'Ulisse/Scripts'
+    end
+    local UiFile=DownloadString(string.format('%s/%s',RepoPath,'UI.lua'))
+    if UiFile then
+        writefile('Ulisse/UI.lua', UiFile)
+    end
+    local UiFile2=DownloadString(string.format('%s/%s',RepoPath,'MaterialUI.lua'))
+    if UiFile2 then
+        writefile('Ulisse/MaterialUI.lua', UiFile2)
+    end
+    local EnvFile=DownloadString(string.format('%s/%s',RepoPath,'Env.lua'))
+    if EnvFile then
+        writefile('Ulisse/Env.lua', EnvFile)
+    end
+    local ManifestFile=DownloadString(string.format('%s/Scripts.json',RepoPath))
+    if ManifestFile then
+        writefile('Ulisse/UlisseScripts.json', ManifestFile)
+        local DecodedGameScripts=HttpService:JSONDecode(readfile'Ulisse/UlisseScripts.json')
+        if DecodedGameScripts then
+            local Downloaded={}
+            for i,v in pairs(DecodedGameScripts) do
+                for Idx,Val in ipairs(v) do
+                    Debugp(Val)
+                    if not CheckTable(Downloaded,Val) then
+                        table.insert(Downloaded, Val)
+                        local Script=DownloadString(string.format('%s/Scripts/%s',RepoPath,Val))
+                        if Script then
+                            local Path=string.format('Ulisse/Scripts/%s',Val)
+                            writefile(string.format('Ulisse/Scripts/%s',Val), Script)
+                        end
+                    end
+                end
+            end
+        end
+    end
+    SetColor'green'
+    OutputToConsole('Done, Loading now.')
+    SetColor()
+end
+
 local function Load()
     Debugp'Load'
+    if not isfile'Ulisse/UlisseScripts.json' then
+        LoadFiles()
+        Load()
+    end
     local DecodedGameScripts=HttpService:JSONDecode(readfile'Ulisse/UlisseScripts.json')
     if DecodedGameScripts then
         local UIFile=isfile'Ulisse/UI.lua'
@@ -154,69 +214,16 @@ local function Load()
             SetColor'red'
             OutputToConsole'UI file missing..? / Env file missing'
             SetColor()
+            LoadFiles()
+            Load()
         end
     else
         SetColor'red'
         OutputToConsole'Failed to run, try again..?'
         SetColor()
+        LoadFiles()
+        Load()
     end
-end
-
-local function Update()
-    SetColor'green'
-    OutputToConsole('New version detected/Files not found, Updating!')
-    SetColor()
-    Debugp'Update Called'
-    if UlisseFolderExists then
-        Debugp'Folder removed'
-        delfolder'Ulisse'
-    end
-    makefolder'Ulisse'
-    local ScriptsFolder=isfolder'Ulisse/Scripts'
-    local VersionFile=DownloadString(string.format('%s/%s',RepoPath,VersionFileName))
-    if VersionFile then
-        writefile('Ulisse/Ulisse.VERSION', VersionFile)
-    end
-    if not ScriptsFolder then
-        makefolder'Ulisse/Scripts'
-    end
-    local UiFile=DownloadString(string.format('%s/%s',RepoPath,'UI.lua'))
-    if UiFile then
-        writefile('Ulisse/UI.lua', UiFile)
-    end
-    local UiFile2=DownloadString(string.format('%s/%s',RepoPath,'MaterialUI.lua'))
-    if UiFile2 then
-        writefile('Ulisse/MaterialUI.lua', UiFile2)
-    end
-    local EnvFile=DownloadString(string.format('%s/%s',RepoPath,'Env.lua'))
-    if EnvFile then
-        writefile('Ulisse/Env.lua', EnvFile)
-    end
-    local ManifestFile=DownloadString(string.format('%s/Scripts.json',RepoPath))
-    if ManifestFile then
-        writefile('Ulisse/UlisseScripts.json', ManifestFile)
-        local DecodedGameScripts=HttpService:JSONDecode(readfile'Ulisse/UlisseScripts.json')
-        if DecodedGameScripts then
-            local Downloaded={}
-            for i,v in pairs(DecodedGameScripts) do
-                for Idx,Val in ipairs(v) do
-                    Debugp(Val)
-                    if not CheckTable(Downloaded,Val) then
-                        table.insert(Downloaded, Val)
-                        local Script=DownloadString(string.format('%s/Scripts/%s',RepoPath,Val))
-                        if Script then
-                            local Path=string.format('Ulisse/Scripts/%s',Val)
-                            writefile(string.format('Ulisse/Scripts/%s',Val), Script)
-                        end
-                    end
-                end
-            end
-        end
-    end
-    SetColor'green'
-    OutputToConsole('Done, Loading now.')
-    SetColor()
-    Load()
 end
 
 local function Start()
@@ -234,13 +241,16 @@ local function Start()
             if ServerVersion and CurrentVersion==ServerVersion then
                 Load()
             else
-                Update()
+                LoadFiles()
+                Load()
             end
         else
-            Update()
+            LoadFiles()
+            Load()
         end
     else
-        Update()
+        LoadFiles()
+        Load()
     end    
 end
 
