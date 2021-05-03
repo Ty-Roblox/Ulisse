@@ -1,5 +1,15 @@
 --[[ Source: https://github.com/Kinlei/MaterialLua ]]
-local Player = game:GetService("Players").LocalPlayer
+if not game:IsLoaded() then
+	game.Loaded:Wait()
+end
+local Players=game:service'Players'
+local Player=Players.LocalPlayer
+if not Player then
+    repeat 
+        Player=Players.LocalPlayer
+        Stepped:Wait()
+    until Player
+end
 local Mouse = Player:GetMouse()
 
 local TextService = game:GetService("TextService")
