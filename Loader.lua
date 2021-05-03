@@ -130,8 +130,8 @@ local function LoadFiles()
     end
     local ManifestFile=DownloadString(string.format('%s/Scripts.json',RepoPath))
     if ManifestFile then
-        writefile('Ulisse/UlisseScripts.json', ManifestFile)
-        local DecodedGameScripts=HttpService:JSONDecode(readfile'Ulisse/UlisseScripts.json')
+        writefile('Ulisse/Scripts.json', ManifestFile)
+        local DecodedGameScripts=HttpService:JSONDecode(readfile'Ulisse/Scripts.json')
         if DecodedGameScripts then
             local Downloaded={}
             for i,v in pairs(DecodedGameScripts) do
@@ -156,11 +156,15 @@ end
 
 local function Load()
     Debugp'Load'
-    if not isfile'Ulisse/UlisseScripts.json' then
+<<<<<<< HEAD
+    if not isfile'Ulisse/Scripts.json' then
         LoadFiles()
         Load()
     end
-    local DecodedGameScripts=HttpService:JSONDecode(readfile'Ulisse/UlisseScripts.json')
+    local DecodedGameScripts=HttpService:JSONDecode(readfile'Ulisse/Scripts.json')
+=======
+    local DecodedGameScripts=HttpService:JSONDecode(readfile'Ulisse/Scripts.json')
+>>>>>>> bdb9a90e3fcaf8f818df01d77eedfc7c2b6d4efd
     if DecodedGameScripts then
         local UIFile=isfile'Ulisse/UI.lua'
         local EnvFile=isfile'Ulisse/Env.lua'
