@@ -8,7 +8,7 @@ local RunService=game:service'RunService'
 local Stepped=RunService.Stepped
 local MainPrompt=CoreGui:FindFirstChild('promptOverlay', true)
 local LocalPlayer=Players.LocalPlayer
-syn.queue_on_teleport(readfile'Ulisse/Scripts/ABA.lua')
+syn.queue_on_teleport(readfile'Ulisse/Scripts/ABA_Autofarm.lua')
 if not MainPrompt then
     repeat 
         MainPrompt=CoreGui:FindFirstChild('promptOverlay', true)
@@ -16,8 +16,64 @@ if not MainPrompt then
     until MainPrompt
 end
 
+local function GetServers(PlaceId, Cursor)
+    if not PlaceId then
+        PlaceId=1458767429
+    end
+    local Request=syn.request({
+        Url=string.format('https://games.roblox.com/v1/games/%s/servers/Public?sortOrder=Asc&limit=100'..(Cursor and '&cursor=' .. Cursor or ''), tostring(PlaceId));
+        Method='GET';
+    })
+    if Request and Request.Success then
+        return HttpService:JSONDecode(Request.Body)
+    end
+end
+local function GetSmallest()
+    local Servers={}
+    local Cursor
+    local iteration=0
+    repeat
+        local GotServers=GetServers(PlaceId, Cursor)
+        if GotServers and GotServers.data then
+            for i,v in ipairs(GotServers.data) do
+                table.insert(Servers, v)
+            end
+            Cursor = GotServers.nextPageCursor
+        else
+            Cursor=nil
+        end
+        warn(Cursor,iteration)
+        iteration+=1
+    until not Cursor
+    warn('Final',Cursor)
+    local Server
+    local Lowest=1e5
+    for i,v in ipairs(Servers) do
+        if v.playing and v.playing>=1 and v.playing<Lowest then
+            Lowest=v.playing
+            Server=v
+        end
+    end
+    return Server, Lowest
+end
+
+local function CallTeleport()
+    local Server,Lowest=GetSmallest()
+    if Server and Server.id and Lowest then
+        Ulisse:SetColor'yellow'
+        Ulisse:PrintConsole(string.format('Joining Server: %s Playing: [%s]', Server.id, Lowest))
+        Ulisse:SetColor()
+        for I=1,5 do
+            pcall(TeleportService.TeleportToPlaceInstance, TeleportService, 1458767429, Server.id)
+            wait(1)
+        end
+    end
+    wait(2)
+    CallTeleport()
+end
+
 MainPrompt.ChildAdded:Connect(function(Child)
-    if typeof(Child)=='Instance' and Child.Name=='ErrorPrompt' and Child.ClassName=='Frame' then
+    if Child.Name=='ErrorPrompt' then
         Ulisse:SetColor'red'
         Ulisse:PrintConsole'ErrorPrompt Found, Teleport called'
         Ulisse:SetColor()
@@ -46,56 +102,6 @@ LocalPlayer.Idled:Connect(function()
     VirtualUser:CaptureController()
     VirtualUser:ClickButton2(Vector2.new())
 end)
-
-local function GetServers(PlaceId, Cursor)
-    if not PlaceId then
-        PlaceId=1458767429
-    end
-    local Request=syn.request({
-        Url=string.format('https://games.roblox.com/v1/games/%s/servers/Public?sortOrder=Asc&limit=100'..(Cursor and '&cursor=' .. Cursor or ''), tostring(PlaceId));
-        Method='GET';
-    })
-    if Request and Request.Success then
-        return HttpService:JSONDecode(Request.Body)
-    end
-end
-
-local function GetSmallest()
-    local Servers={}
-    local Cursor
-    repeat
-        local GotServers=GetServers(PlaceId, Cursor)
-        if GotServers and GotServers.data then
-            for i,v in ipairs(GotServers.data) do
-                table.insert(Servers, v)
-            end
-            Cursor = GotServers.nextPageCursor
-        else
-            Cursor=nil
-        end
-    until not Cursor
-    local Server
-    local Lowest=1e5
-    for i,v in ipairs(Servers) do
-        if v.playing and v.playing>=1 and v.playing<Lowest then
-            Lowest=v.playing
-            Server=v
-        end
-    end
-    return Server, Lowest
-end
-
-local function CallTeleport()
-    local Server,Lowest=GetSmallest()
-    if Server and Server.id and Lowest then
-        Ulisse:SetColor'yellow'
-        Ulisse:PrintConsole(string.format('Joining Server: %s Playing: [%s]', Server.id, Lowest))
-        Ulisse:SetColor()
-        TeleportService:TeleportToPlaceInstance(1458767429, Server.id)
-    end
-    wait(2)
-    CallTeleport()
-end
 
 local function Play()
     if LocalPlayer:FindFirstChild'Loaded' then
