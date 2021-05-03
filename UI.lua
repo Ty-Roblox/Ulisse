@@ -19,7 +19,6 @@ end
 
 library.Warn = function(title, desc)
 	local screen = Instance.new('ScreenGui', CoreGui)
-	syn.protect_gui(screen)
 	
 	local WarnFrame = Instance.new('Frame')
 	WarnFrame.Name = 'WarnFrame'

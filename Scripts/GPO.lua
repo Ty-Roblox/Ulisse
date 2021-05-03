@@ -4,6 +4,9 @@ end
 if shared.CACon then
     shared.CACon:Disconnect()
 end
+if shared.NoclipCon then
+    shared.NoclipCon:Disconnect()
+end
 shared.GPOEnabled=false
 local RunService=game:service'RunService'
 local Players=game:service'Players'
@@ -175,6 +178,17 @@ shared.CACon=LocalPlayer.CharacterAdded:Connect(function(NewChar)
     warn('Newchar', Char, HRP, Hum)
 end)
 
+shared.NoclipCon=Stepped:Connect(function()
+    if AutofarmQuest and HRP and Hum then
+        for i,v in ipairs(Char:GetDescendants()) do
+            if v:IsA'BasePart' then
+                v.CanCollide=false
+                v.Velocity=Vector3.new()
+            end
+        end
+    end
+end)
+
 shared.HBCon=HB:Connect(function()
     if shared.GPOEnabled and HRP and Hum then
         local Target=GetClosest()
@@ -200,14 +214,6 @@ shared.HBCon=HB:Connect(function()
                 if Tweening then
                     Tweening:Cancel()
                     Tweening=nil
-                end
-                for i,v in ipairs(Char:GetChildren()) do
-                    pcall(function()
-                        if v:IsA'BasePart' then
-                            v.CanCollide=false
-                            v.Velocity=Vector3.new()
-                        end
-                    end)
                 end
                 local QuestNPC=GetQuest(SelectedQuestGiver)
                 if QuestNPC then
