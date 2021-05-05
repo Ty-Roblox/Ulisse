@@ -194,7 +194,7 @@ shared.HBCon=HB:Connect(function()
         local Target=GetClosest()
         if Target and Target[1] then
             local Mag=(Target[1].Position-HRP.Position).Magnitude
-            if Mag<=11 and tick()-LastAttack>=.35 and tick()-LastHit>=1.6 then
+            if Mag<=11.25 and tick()-LastAttack>=.35 and tick()-LastHit>=1.6 then
                 local Tool=Weapon()
                 if Tool and Tool.Parent==Char then
                     LastAttack=tick()
@@ -209,7 +209,7 @@ shared.HBCon=HB:Connect(function()
             end
         end
         if AutofarmQuest then
-            FFPart.CFrame=HRP.CFrame*CFrame.new(0,-2.3,0)
+            FFPart.CFrame=HRP.CFrame*CFrame.new(0,-2.35,0)
             if SelectedQuestGiver then
                 if Tweening then
                     Tweening:Cancel()
@@ -227,7 +227,7 @@ shared.HBCon=HB:Connect(function()
                             end
                             TweenTo(TargetNPC[1].CFrame)
                         else
-                            HRP.CFrame=TargetNPC[1].CFrame*CFrame.new(0,.35,3)
+                            HRP.CFrame=TargetNPC[1].CFrame*CFrame.new(0,-8,0)*CFrame.Angles(math.rad(90),0,0)
                         end
                     else
                         if StartPos then
