@@ -1,3 +1,7 @@
+if shared.ABAFarmRan then
+    return
+end
+shared.ABAFarmRan=true
 local Players=game:service'Players'
 local HttpService=game:service'HttpService'
 local TeleportService=game:service'TeleportService'
