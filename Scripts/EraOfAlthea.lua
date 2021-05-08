@@ -253,6 +253,9 @@ while shared.DontKillLoop do
                         v.Velocity=Vector3.new()
                     end
                 end
+                if Target:FindFirstChild'Humanoid' then
+                    Target.Humanoid.Health=0
+                end
                 local Weapon=GetSword()
                 if Weapon then
                     local TargetRoot=Target:FindFirstChild'HumanoidRootPart'
@@ -261,7 +264,7 @@ while shared.DontKillLoop do
                         if Mag>45 then
                             TweenTo(HRP, TargetRoot.CFrame)
                         else
-                            HRP.CFrame=TargetRoot.CFrame*CFrame.new(0,-2,6.5)*CFrame.Angles(math.rad(10),0,0)
+                            HRP.CFrame=TargetRoot.CFrame*CFrame.new(0,0,8)*CFrame.Angles(math.rad(10),0,0)
                             FFPart.CFrame=HRP.CFrame*CFrame.new(0,-2.5,0)
                             Weapon:Activate()
                         end
