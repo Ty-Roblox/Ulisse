@@ -67,7 +67,7 @@ local NPCList={
     'Vedalia';
     'Orc';
     'Abu';
-    'Dire Wolf'
+    'Dire Wolf';
     'Scorpion';
     'Wolf';
 }
