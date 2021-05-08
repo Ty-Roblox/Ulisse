@@ -2,6 +2,13 @@ local LocalPlayer=game:service'Players'.LocalPlayer
 local Avatar=game:service'ReplicatedStorage'.Events.Avatar
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 
+for i,v in ipairs(Character:GetChildren()) do
+    if v:IsA'Accessory' then
+        Avatar:FireServer('Remove', 'Hats', tonumber(v.Name))
+        wait(.1)
+    end
+end
+
 local function Badonkers()
 	Avatar:FireServer('Remove', 'Hats', 617605556)
 	Avatar:FireServer('Wear', 'Hats', 4546422467)
