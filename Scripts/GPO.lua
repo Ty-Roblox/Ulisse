@@ -125,7 +125,12 @@ local function GetQuest(QuestGiver)
                     if Mag<5 then
                         if tick()-LastCalledQuest>16 then
                             LastCalledQuest=tick()
-                            local Questname=string.format('Help %s',string.lower(QuestGiver.Name))
+                            local Questname
+                            if QuestGiver.Name=='Waby' then
+                                Questname='Help Waby'
+                            else
+                                Questname=string.format('Help %s',string.lower(QuestGiver.Name))
+                            end
                             warn(Questname)
                             QuestRemote:InvokeServer({'takequest', Questname})
                             warn'Take quest'
