@@ -67,6 +67,7 @@ local NPCList={
     'Vedalia';
     'Orc';
     'Abu';
+    'Dire Wolf'
     'Scorpion';
     'Wolf';
 }
@@ -235,7 +236,7 @@ local Offset=8
 
 Section:Item('slider', 'Hitbox offset', function(v)
     Offset=v
-end,{Min=-10, Max=12})
+end,{Min=-20, Max=20})
 
 Section:Item('dropdown', 'NPC To Farm',function(v)
     MobName=v
