@@ -155,7 +155,7 @@ local function GetQuest(HRP)
                 local QuestName=Frame:FindFirstChild'QuestName'
                 local LevelReq=Frame:FindFirstChild'LevelReq'
                 local Description=Frame:FindFirstChild'Description'
-                if QuestName and LevelReq and Description and (not string.find(string.lower(Description.Text), 'dungeon')) then
+                if QuestName and LevelReq and Description and (not string.find(string.lower(Description.Text), 'dungeon')) and (not string.find(string.lower(Description.Text), 'labyrinth')) then
                     local LevelReqstr=string.gsub(LevelReq.Text, '[%a%s%p%W+]', '')
                     local RequiredLevel=tonumber(LevelReqstr)
                     if RequiredLevel>BestLevel and Level>=RequiredLevel then
