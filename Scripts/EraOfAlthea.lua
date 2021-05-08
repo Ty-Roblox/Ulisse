@@ -74,7 +74,7 @@ local NPCList={
 local function GetSword()
     local Tool
     for i,v in ipairs(Character:GetChildren()) do
-        if v:IsA'Tool' and string.find(string.lower(v.Name), 'sword') then
+        if v:IsA'Tool' and v:FindFirstChild'Weapon Handler' then
             Tool=v
             break
         end
@@ -83,7 +83,7 @@ local function GetSword()
         EquipRem:FireServer()
         wait(.35)
         for i,v in ipairs(Character:GetChildren()) do
-            if v:IsA'Tool' and string.find(string.lower(v.Name), 'sword') then
+            if v:IsA'Tool' and v:FindFirstChild'Weapon Handler' then
                 Tool=v
                 break
             end
