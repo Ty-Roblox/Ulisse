@@ -145,8 +145,8 @@ function Format:RecurseTable(Table, Index)
                 FormattedTable[i]=tostring(v)
             elseif Type=='CFrame' then
                 local X,Y,Z=v.Position.X,v.Position.Y,v.Position.Z
-                local LX,LY,LZ=v.LookVector.X,v.LookVector.Y,v.LookVector.Z
-                FormattedTable[i]=string.format('CFrame.new(%f,%f,%f,%f,%f,%f)',X,Y,Z,LX,LY,LZ)
+                --local LX,LY,LZ=v.LookVector.X,v.LookVector.Y,v.LookVector.Z
+                FormattedTable[i]=string.format('CFrame.new(%f,%f,%f)',X,Y,Z)
             elseif Type=='Vector3' then
                 local X,Y,Z=v.X, v.Y, V.Z
                 FormattedTable[i]=string.format('Vector3.new(%f,%f,%f)',X,Y,Z)
@@ -182,8 +182,8 @@ function Format:RecurseTable(Table, Index)
                 FormattedTable[i]=tostring(v)
             elseif Type=='CFrame' then
                 local X,Y,Z=v.Position.X,v.Position.Y,v.Position.Z
-                local LX,LY,LZ=v.LookVector.X,v.LookVector.Y,v.LookVector.Z
-                FormattedTable[i]=string.format('CFrame.new(%f,%f,%f,%f,%f,%f)',X,Y,Z,LX,LY,LZ)
+                --local LX,LY,LZ=v.LookVector.X,v.LookVector.Y,v.LookVector.Z
+                FormattedTable[i]=string.format('CFrame.new(%f,%f,%f)',X,Y,Z)
             elseif Type=='Vector3' then
                 local X,Y,Z=v.X, v.Y, V.Z
                 FormattedTable[i]=string.format('Vector3.new(%f,%f,%f)',X,Y,Z)
