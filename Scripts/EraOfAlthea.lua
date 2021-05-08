@@ -58,6 +58,8 @@ local NPCS=workspace:WaitForChild'NPCS'
 local Events=Character:WaitForChild'Client':WaitForChild'Events'
 local EquipRem=Events:WaitForChild'ActivateWeapon'
 
+local LastPos
+
 local NPCList={
     'Golem';
     'Rog, The Bearded One';
@@ -265,6 +267,7 @@ while shared.DontKillLoop do
                 if Weapon then
                     local TargetRoot=Target:FindFirstChild'Hitbox'
                     if TargetRoot then
+                        LastPos=TargetRoot.CFrame
                         local Mag=(TargetRoot.Position-HRP.Position).Magnitude
                         if Mag>45 then
                             TweenTo(HRP, TargetRoot.CFrame)
@@ -276,7 +279,11 @@ while shared.DontKillLoop do
                     end
                 end
             else
-                TweenTo(HRP, workspace:FindFirstChild'Part'.CFrame)
+                if LastPos then
+                    TweenTo(HRP, LastPos)
+                else
+                    TweenTo(HRP, workspace:FindFirstChild'Part'.CFrame)
+                end
             end
         end
     end
