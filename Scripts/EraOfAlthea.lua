@@ -258,7 +258,7 @@ while shared.DontKillLoop do
                 end
                 local Weapon=GetSword()
                 if Weapon then
-                    local TargetRoot=Target:FindFirstChild'HumanoidRootPart'
+                    local TargetRoot=Target:FindFirstChild'Hitbox'
                     if TargetRoot then
                         local Mag=(TargetRoot.Position-HRP.Position).Magnitude
                         if Mag>45 then
