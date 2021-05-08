@@ -6,7 +6,6 @@ local TweenService=game:service'TweenService'
 local VirtualUser=game:service'VirtualUser'
 local CoreGui=game:service'CoreGui'
 local RunService=game:service'RunService'
-local CoreGui=game:service'CoreGui'
 
 syn.queue_on_teleport(readfile'Ulisse/Scripts/EraOfAlthea.lua')
 
