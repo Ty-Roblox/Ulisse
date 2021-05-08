@@ -132,6 +132,10 @@ local function GetQuest(QuestGiver)
                                 Questname='Help Rice'
                             elseif QuestGiver.Name=='Zen' then
                                 Questname='Help Zen'
+                            elseif QuestGiver.Name=='Miska' then
+                                Questname='Help Miska'
+                            elseif QuestGiver.Name=='Vego' then
+                                Questname='Help Vego'
                             else
                                 Questname=string.format('Help %s',string.lower(QuestGiver.Name))
                             end
