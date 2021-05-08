@@ -155,7 +155,7 @@ local function GetQuest(HRP)
                 local QuestName=Frame:FindFirstChild'QuestName'
                 local LevelReq=Frame:FindFirstChild'LevelReq'
                 local Description=Frame:FindFirstChild'Description'
-                if QuestName and LevelReq and Description then
+                if QuestName and LevelReq and Description and (not string.find(string.lower(QuestName.Text), 'dungeon')) then
                     local LevelReqstr=string.gsub(LevelReq.Text, '[%a%s%p%W+]', '')
                     local RequiredLevel=tonumber(LevelReqstr)
                     if RequiredLevel>BestLevel and Level>=RequiredLevel then
@@ -231,6 +231,12 @@ Section:Item('toggle','Noclip',function(v)
     shared.Noclip=v
 end)
 
+local Offset=8
+
+Section:Item('slider', 'Hitbox offset', function(v)
+    Offset=v
+end,{Min=0, Max=12})
+
 Section:Item('dropdown', 'NPC To Farm',function(v)
     MobName=v
     warn(v)
@@ -264,7 +270,7 @@ while shared.DontKillLoop do
                         if Mag>45 then
                             TweenTo(HRP, TargetRoot.CFrame)
                         else
-                            HRP.CFrame=TargetRoot.CFrame*CFrame.new(0,0,8)*CFrame.Angles(math.rad(10),0,0)
+                            HRP.CFrame=TargetRoot.CFrame*CFrame.new(0,0,Offset)*CFrame.Angles(math.rad(10),0,0)
                             FFPart.CFrame=HRP.CFrame*CFrame.new(0,-2.5,0)
                             Weapon:Activate()
                         end
