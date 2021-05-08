@@ -2,10 +2,12 @@ local LocalPlayer=game:service'Players'.LocalPlayer
 local Avatar=game:service'ReplicatedStorage'.Events.Avatar
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 
-for i,v in ipairs(Character:GetChildren()) do
-    if v:IsA'Accessory' then
-        Avatar:FireServer('Remove', 'Hats', tonumber(v.Name))
-        wait(.1)
+local function ClearHats()
+    for i,v in ipairs(Character:GetChildren()) do
+        if v:IsA'Accessory' then
+            Avatar:FireServer('Remove', 'Hats', tonumber(v.Name))
+            wait(.1)
+        end
     end
 end
 
@@ -49,6 +51,57 @@ local function Badonkers()
 	Avatar:FireServer('Tune', Character:FindFirstChild'172327379', 'C', Vector3.new(19.000000,16.000000,12.000000))
 end
 
-Badonkers()
-wait(.5)
-Badonkers()
+local function Smalldonkers()
+	Avatar:FireServer('Remove', 'Hats', 617605556)
+	Avatar:FireServer('Wear', 'Hats', 172327379)
+	Avatar:FireServer('Remove', 'Hats', 3033910400)
+	Avatar:FireServer('Wear', 'Hats', 4546422467)
+	Avatar:FireServer('Remove', 'Hats', 3403874988)
+	Avatar:FireServer('Wear', 'Hats', 4508445398)
+	Avatar:FireServer('Tune', Character:FindFirstChild'172327379', 'S', Vector3.new(0.300000,0.300000,0.300000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'172327379', 'P', Vector3.new(0.000000,0.000000,0.000000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'172327379', 'P', Vector3.new(0.000000,0.000000,-1.100000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'172327379', 'S', Vector3.new(0.550000,0.550000,0.550000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'172327379', 'P', Vector3.new(0.000000,-1.500000,-1.100000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'172327379', 'P', Vector3.new(0.000000,-1.500000,-0.500000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'172327379', 'P', Vector3.new(0.000000,-1.500000,-0.600000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'172327379', 'P', Vector3.new(0.500000,-1.500000,-0.600000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'4546422467', 'S', Vector3.new(0.600000,0.600000,0.600000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'4546422467', 'R', Vector3.new(-0.000000,-0.000000,0.000000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'4546422467', 'R', Vector3.new(3.141593,-0.000000,0.000000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'4546422467', 'P', Vector3.new(0.000000,0.000000,-0.900000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'4546422467', 'P', Vector3.new(-0.600000,0.000000,-0.900000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'4546422467', 'P', Vector3.new(-0.600000,-0.900000,-0.900000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'4546422467', 'P', Vector3.new(-0.600000,-0.900000,-0.900000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'4546422467', 'S', Vector3.new(0.650000,0.650000,0.650000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'4546422467', 'P', Vector3.new(-0.600000,-0.900000,-0.600000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'4546422467', 'P', Vector3.new(-0.600000,-0.800000,-0.600000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'4546422467', 'C', Vector3.new(19.000000,15.000000,12.000000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'172327379', 'C', Vector3.new(19.000000,15.000000,12.000000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'4508445398', 'P', Vector3.new(0.000000,0.000000,-0.900000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'4508445398', 'P', Vector3.new(0.000000,-1.000000,-0.900000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'4508445398', 'P', Vector3.new(0.000000,-1.000000,-1.200000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'4508445398', 'C', Vector3.new(19.000000,15.000000,15.000000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'4508445398', 'S', Vector3.new(1.000000,1.000000,1.000000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'4508445398', 'R', Vector3.new(-0.000000,-0.000000,-0.000000))
+	Avatar:FireServer('Tune', Character:FindFirstChild'4508445398', 'P', Vector3.new(0.000000,-1.000000,-1.200000))
+end
+
+local UI=Ulisse.UI:Main()
+local Tab=UI:Tab'P To Toggle'
+local Section=Tab:Section'Section'
+Section:Item('button','Smalldonkers',function()
+    ClearHats()
+    Smalldonkers()
+    wait(.5)
+    Smalldonkers()
+end)
+Section:Item('button', 'MOMMY MILKERS',function()
+    ClearHats()
+    Badonkers()
+    wait(.5)
+    Badonkers()
+end)
+Section:Item('button', 'Clear hats',function()
+    ClearHats()
+end)
