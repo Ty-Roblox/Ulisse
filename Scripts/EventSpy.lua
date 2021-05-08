@@ -298,7 +298,3 @@ for i,v in ipairs(game:GetDescendants()) do
 end
 
 shared.NCHook=OldNamecall
-
-print''
-print''
-print''
