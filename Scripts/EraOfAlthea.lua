@@ -12,8 +12,8 @@ syn.queue_on_teleport(readfile'Ulisse/Scripts/EraOfAlthea.lua')
 
 local Map=workspace:WaitForChild'Map'
 
-local Events = RepS:WaitForChild'Events'
-local ServerSettings = RepS:WaitForChild'ServerSettings'
+local Events = ReplicatedStorage:WaitForChild'Events'
+local ServerSettings = ReplicatedStorage:WaitForChild'ServerSettings'
 local Reserve = ServerSettings:WaitForChild'ReservedServer'
 local JoinRem=ReplicatedStorage:WaitForChild'Events':WaitForChild'JoinPrivateServer'
 
