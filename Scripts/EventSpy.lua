@@ -85,12 +85,17 @@ function Format:CheckTable(Table)
     end
 end
 
+function Format:IsInteger(String)
+    return not (String=='' or string.match(String, '%D'))
+end
+  
 function Format:FormatPath(This)
     local Path=This:GetFullName()
     local Args=string.split(Path, '.')
     if Args and Args[1] then
         if IsService(Args[1]) then
             Args[1]=string.format('game:service\'%s\'', Args[1])
+            --[[
             if Args[1]=='game:service\'Workspace\'' then
                 Args[1]='workspace'
             end
@@ -101,10 +106,10 @@ function Format:FormatPath(This)
                 Args[1]='game:service\'Players\''
                 Args[2]='LocalPlayer'
                 Args[3]='Character'
-            end
+            end]]
         end
         for i,v in ipairs(Args) do
-            if string.match(v, '%s') then
+            if string.match(v, '%s') or Format:IsInteger(string.sub(v, 1, 1)) then
                 Args[i]=string.format(':FindFirstChild\'%s\'',v)
             end
         end
@@ -136,6 +141,7 @@ function Format:RecurseTable(Table, Index)
             if v==nil then
                 FormattedTable[i]='nil'
                 warn'Got nil'
+                continue
             end
             local Type=typeof(v)
             if Type=='Instance' then
@@ -148,7 +154,7 @@ function Format:RecurseTable(Table, Index)
                 --local LX,LY,LZ=v.LookVector.X,v.LookVector.Y,v.LookVector.Z
                 FormattedTable[i]=string.format('CFrame.new(%f,%f,%f)',X,Y,Z)
             elseif Type=='Vector3' then
-                local X,Y,Z=v.X, v.Y, V.Z
+                local X,Y,Z=v.X, v.Y, v.Z
                 FormattedTable[i]=string.format('Vector3.new(%f,%f,%f)',X,Y,Z)
             elseif Type=='Color3' then
                 local R,G,B=v.R*255,v.G*255,v.B*255
@@ -173,6 +179,7 @@ function Format:RecurseTable(Table, Index)
             if v==nil then
                 FormattedTable[i]='nil'
                 warn'Got nil'
+                continue
             end
             local Type=typeof(v)
             if Type=='Instance' then
@@ -185,7 +192,7 @@ function Format:RecurseTable(Table, Index)
                 --local LX,LY,LZ=v.LookVector.X,v.LookVector.Y,v.LookVector.Z
                 FormattedTable[i]=string.format('CFrame.new(%f,%f,%f)',X,Y,Z)
             elseif Type=='Vector3' then
-                local X,Y,Z=v.X, v.Y, V.Z
+                local X,Y,Z=v.X, v.Y, v.Z
                 FormattedTable[i]=string.format('Vector3.new(%f,%f,%f)',X,Y,Z)
             elseif Type=='Color3' then
                 local R,G,B=v.R*255,v.G*255,v.B*255
