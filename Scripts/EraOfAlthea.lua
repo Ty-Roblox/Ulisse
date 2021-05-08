@@ -181,7 +181,7 @@ local function GetClosestNPC(Name)
         local Distance=1e5
         for i,v in ipairs(NPCS:GetChildren()) do
             local HP=v:FindFirstChild'Health'
-            if v.Name==Name and v.PrimaryPart and HP and HP.Value>1 and (not v:FindFirstChild'Immune') then
+            if v.Name==Name and v.PrimaryPart and HP and HP.Value>5 and (not v:FindFirstChild'Immune') and v:FindFirstChild'Hitbox' then
                 local TargetRoot=v:FindFirstChild'HumanoidRootPart'
                 local Magnitude=(TargetRoot.Position-HRP.Position).Magnitude
                 if Magnitude<Distance then
@@ -264,7 +264,7 @@ while shared.DontKillLoop do
                         if Mag>45 then
                             TweenTo(HRP, TargetRoot.CFrame)
                         else
-                            HRP.CFrame=TargetRoot.CFrame*CFrame.new(0,0,8)*CFrame.Angles(math.rad(10),0,0)
+                            HRP.CFrame=TargetRoot.CFrame*CFrame.new(0,0,16)*CFrame.Angles(math.rad(10),0,0)
                             FFPart.CFrame=HRP.CFrame*CFrame.new(0,-2.5,0)
                             Weapon:Activate()
                         end
