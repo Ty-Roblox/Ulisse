@@ -66,11 +66,8 @@ local NPCList={
     'G-Knight';
     'Vedalia';
     'Orc';
-    'Orc';
     'Abu';
-    'Thonk, The Orc Lord';
     'Scorpion';
-    'Dire Wolf';
     'Wolf';
 }
 
@@ -112,6 +109,13 @@ end
 local function GetQuestPapers()
     local Tab={}
     for i,v in ipairs(Map:GetChildren()) do
+        if v:IsA'Model' and v.Name=='Quest Board' and v:FindFirstChild'Papers' then
+            for i,Val in ipairs(v.Papers:GetChildren()) do
+                table.insert(Tab, Val)
+            end
+        end
+    end
+    for i,v in ipairs(workspace:GetChildren()) do
         if v:IsA'Model' and v.Name=='Quest Board' and v:FindFirstChild'Papers' then
             for i,Val in ipairs(v.Papers:GetChildren()) do
                 table.insert(Tab, Val)
