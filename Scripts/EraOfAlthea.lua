@@ -221,11 +221,9 @@ local Tab=UI:Tab'P To Toggle'
 local Section=Tab:Section'Swordclover online:tm:'
 Section:Item('toggle','Autofarm',function(v)
     shared.NPCAutofarm=v
-    if not v then
-        if shared.CurrentTween then
-            shared.CurrentTween:Cancel()
-            shared.CurrentTween=nil
-        end
+    if shared.CurrentTween then
+        shared.CurrentTween:Cancel()
+        shared.CurrentTween=nil
     end
 end)
 Section:Item('toggle','Noclip',function(v)
@@ -236,7 +234,7 @@ local Offset=8
 
 Section:Item('slider', 'Hitbox offset', function(v)
     Offset=v
-end,{Min=-20, Max=20})
+end,{Min=-22, Max=22})
 
 Section:Item('dropdown', 'NPC To Farm',function(v)
     MobName=v
