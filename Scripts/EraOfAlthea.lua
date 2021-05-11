@@ -260,7 +260,7 @@ while shared.DontKillLoop do
                         v.Velocity=Vector3.new()
                     end
                 end
-                if Target:FindFirstChild'Humanoid' then
+                if Target:FindFirstChild'Humanoid' and Target:FindFirstChild'Hitbox' and isnetworkowner(Target.Hitbox) then
                     Target.Humanoid.Health=0
                 end
                 local Weapon=GetSword()
