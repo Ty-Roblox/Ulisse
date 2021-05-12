@@ -169,6 +169,9 @@ local function GetQuest(HRP)
             end
         end
     end
+    if not GotPaper then
+        return
+    end
     local Mag=(GotPaper.Position-HRP.Position).Magnitude
     if Mag>10 then
         TweenTo(HRP, GotPaper.CFrame) 
