@@ -187,7 +187,7 @@ local function GetClosestNPC(Name)
         local Distance=1e5
         for i,v in ipairs(NPCS:GetChildren()) do
             local HP=v:FindFirstChild'Health'
-            if v.Name==Name and v.PrimaryPart and HP and HP.Value>5 and (not v:FindFirstChild'Immune') and v:FindFirstChild'Hitbox' then
+            if string.find(string.lower(v.Name), string.lower(Name)) and v.PrimaryPart and HP and HP.Value>1 and (not v:FindFirstChild'Immune') and v:FindFirstChild'Hitbox' then
                 local TargetRoot=v:FindFirstChild'HumanoidRootPart'
                 local Magnitude=(TargetRoot.Position-HRP.Position).Magnitude
                 if Magnitude<Distance then

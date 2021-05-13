@@ -1,6 +1,7 @@
 shared.CFlyEnabled=false
 local LocalPlayer=game:GetService'Players'.LocalPlayer
-local RS=game:GetService'RunService'.RenderStepped
+local RunService=game:service'RunService'
+local Heartbeat=RunService.Heartbeat
 local UIS=game:GetService'UserInputService'
 local Mouse=LocalPlayer:GetMouse()
 local Camera=workspace.CurrentCamera
@@ -13,6 +14,14 @@ if Ch then
 		CF=RootPart.CFrame
 	end
 end
+local FFPart=Instance.new'Part'
+FFPart.Size=Vector3.new(8,.5,8)
+FFPart.Anchored=true
+FFPart.Material=Enum.Material.ForceField
+FFPart.Color=Color3.fromRGB(255,0,255)
+FFPart.Transparency=1
+FFPart.Parent=workspace
+
 local PartIgnore={}
 local Enabled=false
 if getgenv().Connects then
@@ -31,6 +40,7 @@ Connects[#Connects+1]=UIS.InputBegan:Connect(function(Key,GC)
 			if RootPart then
 				CF=RootPart.CFrame
 				Enabled=true
+				FFPart.CanCollide=true
 			end
 		end
     end
@@ -39,6 +49,7 @@ Connects[#Connects+1]=UIS.InputEnded:Connect(function(Key,GC)
 	if GC then return end
 	if Key.KeyCode==Enum.KeyCode.C then
 		Enabled=false
+		FFPart.CanCollide=false
 		CF=CFrame.new()
 	end
 end)
@@ -70,8 +81,11 @@ while shared.CFlyEnabled do
 	if Enabled and Ch then
 		local RootPart = Ch.PrimaryPart or Ch:FindFirstChild'HumanoidRootPart'
 		if RootPart then
-			RootPart.Velocity = ZeroVector
-			RootPart.RotVelocity = ZeroVector
+			for i,v in ipairs(Ch:GetChildren()) do
+				if v:IsA'BasePart' then
+					v.Velocity=ZeroVector
+				end
+			end
 			local MaxY=1e9
 			local Direction = ZeroVector +
 				(UIS:IsKeyDown'W'and Vector3.new(0, 0, -1)or ZeroVector) +
@@ -83,21 +97,22 @@ while shared.CFlyEnabled do
 				CF = CF * CFrame.new(Direction)
 			end
 			local Direction=(Mouse.Hit.Position-Camera.CFrame.Position) 
-			for i, v in ipairs(RootPart:GetTouchingParts())do
-				if not v:IsDescendantOf(Ch)and GetIndex(v)<0 then
+			for i, v in ipairs(RootPart:GetTouchingParts()) do
+				if not v:IsDescendantOf(Ch)and GetIndex(v)<0 and v~=FFPart then
 					coroutine.wrap(DisableClip)(v)
 				end
 			end
 			Direction = Camera.CFrame.Position + (Direction.Unit * 10000)
-			if not UIS:GetFocusedTextBox()then
+			if not UIS:GetFocusedTextBox() then
 				if CF.Y > MaxY then
 					CF = CFrame.new(CF.X, math.clamp(CF.Y, -1000, MaxY), CF.Z)
 				end
 				CF = CFrame.new(CF.Position, Direction)
 				Ch:SetPrimaryPartCFrame(CF)
+				FFPart.CFrame=CF*CFrame.new(0,-2.5,0)
 				RootPart.CFrame = CF
 			end
 		end
 	end
-    wait()
+    Heartbeat:Wait()
 end
