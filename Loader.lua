@@ -23,8 +23,6 @@ if not shared.UConfig then
     }
 end
 
-syn.queue_on_teleport(string.format('shared.UConfig={ FlyIncrease=%f }', shared.UConfig.FlyIncrease))
-
 local function Debugp(...)
     if IsDebug then
         local Args={...}

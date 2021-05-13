@@ -22,6 +22,10 @@ FFPart.Color=Color3.fromRGB(255,0,255)
 FFPart.Transparency=1
 FFPart.Parent=workspace
 
+if not shared.UConfig then
+	shared.UConfig={ FlyIncrease=2; }
+end
+
 local PartIgnore={}
 local Enabled=false
 if getgenv().Connects then
