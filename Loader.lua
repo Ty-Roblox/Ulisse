@@ -17,6 +17,14 @@ local IsDebug=false
 local Pages=AssetService:GetGamePlacesAsync()
 local Places={}
 
+if not shared.UConfig then
+    shared.UConfig={
+        FlyIncrease=2;
+    }
+end
+
+syn.queue_on_teleport(string.format('shared.UConfig={ FlyIncrease=%f }', shared.UConfig.FlyIncrease))
+
 local function Debugp(...)
     if IsDebug then
         local Args={...}

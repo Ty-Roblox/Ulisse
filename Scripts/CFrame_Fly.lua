@@ -92,7 +92,7 @@ while shared.CFlyEnabled do
 				(UIS:IsKeyDown'S'and Vector3.new(0, 0, 1)or ZeroVector) +
 				(UIS:IsKeyDown'D'and Vector3.new(1, 0, 0)or ZeroVector) +
 				(UIS:IsKeyDown'A'and Vector3.new(-1, 0, 0)or ZeroVector)
-			Direction = Direction*2*(UIS:IsKeyDown'LeftControl'and 6 or 1.25)
+			Direction = Direction * shared.UConfig.FlyIncrease * (UIS:IsKeyDown'LeftControl' and 4 or 1)
 			if not UIS:GetFocusedTextBox()then
 				CF = CF * CFrame.new(Direction)
 			end
