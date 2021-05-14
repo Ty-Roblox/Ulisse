@@ -49,6 +49,7 @@ FFPart.Size=Vector3.new(8,.5,8)
 FFPart.Anchored=true
 FFPart.Material=Enum.Material.ForceField
 FFPart.Color=Color3.fromRGB(255,0,255)
+FFPart.Transparency=1
 FFPart.Parent=workspace
 
 local Character=LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
@@ -241,10 +242,10 @@ Section:Item('slider', 'Hitbox offset', function(v)
     Offset=v
 end,{Min=-22, Max=22})
 
-Section:Item('dropdown', 'NPC To Farm',function(v)
+Section:Item('textbox', 'NPC To Farm',function(v)
     MobName=v
     warn(v)
-end,{items = NPCList})
+end,{Placeholder='Wolf'})
 
 while shared.DontKillLoop do
     if shared.NPCAutofarm then
@@ -275,7 +276,7 @@ while shared.DontKillLoop do
                         if Mag>45 then
                             TweenTo(HRP, TargetRoot.CFrame)
                         else
-                            HRP.CFrame=TargetRoot.CFrame*CFrame.new(0,0,Offset)*CFrame.Angles(math.rad(10),0,0)
+                            HRP.CFrame=TargetRoot.CFrame*CFrame.new(0,0,Offset)
                             FFPart.CFrame=HRP.CFrame*CFrame.new(0,-2.5,0)
                             Weapon:Activate()
                         end
