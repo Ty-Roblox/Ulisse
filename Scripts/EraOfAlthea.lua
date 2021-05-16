@@ -276,7 +276,7 @@ while shared.DontKillLoop do
                         if Mag>45 then
                             TweenTo(HRP, TargetRoot.CFrame)
                         else
-                            HRP.CFrame=TargetRoot.CFrame*CFrame.new(0,0,Offset)
+                            HRP.CFrame=CFrame.new((TargetRoot.CFrame*CFrame.new(0,0,Offset)).Position,TargetRoot.Position)
                             FFPart.CFrame=HRP.CFrame*CFrame.new(0,-2.5,0)
                             Weapon:Activate()
                         end
