@@ -42,13 +42,19 @@ Connects[#Connects+1]=UIS.InputBegan:Connect(function(Key,GC)
 		if Ch then
 			local RootPart = Ch.PrimaryPart or Ch:FindFirstChild'HumanoidRootPart'
 			if RootPart then
-				CF=RootPart.CFrame
-				Enabled=true
-				FFPart.CanCollide=true
+				Enabled=not Enabled
+				if Enabled then
+					CF=RootPart.CFrame
+					FFPart.CanCollide=true
+				else
+					FFPart.CanCollide=false
+					CF=CFrame.new()
+				end
 			end
 		end
     end
 end)
+--[[
 Connects[#Connects+1]=UIS.InputEnded:Connect(function(Key,GC)
 	if GC then return end
 	if Key.KeyCode==Enum.KeyCode.C then
@@ -56,7 +62,7 @@ Connects[#Connects+1]=UIS.InputEnded:Connect(function(Key,GC)
 		FFPart.CanCollide=false
 		CF=CFrame.new()
 	end
-end)
+end)]]
 local function GetIndex(Value)
     for i, v in ipairs(PartIgnore) do
         if v == Value then
