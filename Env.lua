@@ -1,9 +1,8 @@
 getgenv().Ulisse={}
 local Env=getgenv().Ulisse
-
-local Players=game:service'Players'
-local VirtualUser=game:service'VirtualUser'
-local LocalPlayer=Players.LocalPlayer
+local Players=game:GetService'Players'
+local VirtualUser=game:GetService'VirtualUser'
+local LocalPlayer=Players.LocalPlayer or Players.PlayerAdded:Wait()
 
 function Env:InsertTable(Table1, Table2)
     for i,v in ipairs(Table2) do
@@ -53,12 +52,6 @@ end
 
 if isfile'Ulisse/UI.lua' then
     Env.UI=loadstring(readfile'Ulisse/UI.lua')()
-end
-
-if not LocalPlayer then
-    repeat wait()
-        LocalPlayer=Players.LocalPlayer
-    until LocalPlayer
 end
 
 LocalPlayer.Idled:Connect(function()
