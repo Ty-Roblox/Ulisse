@@ -18,7 +18,9 @@ library.UICorner = function(a, b)
 end
 
 library.Warn = function(title, desc)
-	local screen = Instance.new('ScreenGui', CoreGui)
+	local screen = Instance.new'ScreenGui'
+    syn.protect_gui(screen)
+    screen.Parent=CoreGui
 	
 	local WarnFrame = Instance.new('Frame')
 	WarnFrame.Name = 'WarnFrame'
