@@ -18,7 +18,7 @@ MainPrompt.ChildAdded:Connect(function(Child)
 		rconsoleprint'Got Error Box\n'
 		while true do
 			local Success, Return = pcall(function()
-				Env:JoinServer(game.PlaceId, 'Asc', 200, false)
+				Ulisse:JoinServer(game.PlaceId, 'Asc', 200, false)
 			end)
 			wait(10)
 		end
@@ -105,7 +105,7 @@ end
 
 while true do
 	local Success, Return = pcall(function()
-		Env:JoinServer(game.PlaceId, 'Asc', 200, false)
+		Ulisse:JoinServer(game.PlaceId, 'Asc', 200, false)
 	end)
 	wait(10)
 end
