@@ -1,51 +1,10 @@
-getgenv().Ulisse={}
-local Env=getgenv().Ulisse
-local Players=game:GetService'Players'
-local VirtualUser=game:GetService'VirtualUser'
 local TeleportService=game:service'TeleportService'
 local HttpService=game:service'HttpService'
 local RunService=game:service'RunService'
-local LocalPlayer=Players.LocalPlayer or Players.PlayerAdded:Wait()
 
-function Env:InsertTable(Table1, Table2)
-    for i,v in ipairs(Table2) do
-        table.insert(Table1, v)
-    end
-end
+local Module={}
 
-function Env:ClickButton(Obj)
-    if Obj and Obj:IsA'GuiButton' then
-        local Connections={}
-        self:InsertTable(Connections, getconnections(Obj.MouseButton1Click))
-        self:InsertTable(Connections, getconnections(Obj.MouseButton1Down))
-        self:InsertTable(Connections, getconnections(Obj.MouseButton1Up))
-        self:InsertTable(Connections, getconnections(Obj.Activated))
-        for i,v in ipairs(Connections) do
-            v:Fire()
-        end
-    end
-end
-
-function Env:PrintConsole(...)
-    if not shared.StopOutput then
-        local Args={...}
-        for i,v in pairs(Args) do 
-            Args[i]=tostring(v)
-        end
-        local PrintStr=table.concat(Args, '    ')
-        rconsoleprint(string.format('%s\n', PrintStr))
-    end
-end
-
-function Env:SetColor(Color) 
-	if not Color or typeof(Color)~='string' then
-		Color='WHITE'
-	end
-	Color=string.upper(Color)
-	rconsoleprint('@@'..Color..'@@')
-end
-
-function Env:GetServerPage(PlaceId, Cursor)
+function Module:GetServerPage(PlaceId, Cursor)
     if not PlaceId then
         PlaceId=game.PlaceId
     end
@@ -58,7 +17,7 @@ function Env:GetServerPage(PlaceId, Cursor)
     end
 end
 
-function Env:GetAllServers(PlaceId, FastMode)
+function Module:GetAllServers(PlaceId, FastMode)
     local Servers={}
     local Cursor
     local Idx=0
@@ -86,7 +45,7 @@ function Env:GetAllServers(PlaceId, FastMode)
     return Servers
 end
 
-function Env:BlacklistServer(JobId, Time)
+function Module:BlacklistServer(JobId, Time)
     local Blacklisted
     if isfile'TeleportAPINew.JSON' then
         local Content=readfile'TeleportAPINew.JSON'
@@ -98,7 +57,7 @@ function Env:BlacklistServer(JobId, Time)
     writefile('TeleportAPINew.JSON', HttpService:JSONEncode(Blacklisted))
 end
 
-function Env:UpdateBlacklistTime(Time)
+function Module:UpdateBlacklistTime(Time)
     local Blacklisted
     if isfile'TeleportAPINew.JSON' then
         local Content=readfile'TeleportAPINew.JSON'
@@ -121,7 +80,7 @@ function Env:UpdateBlacklistTime(Time)
     end
 end
 
-function Env:CheckBlacklisted(JobId)
+function Module:CheckBlacklisted(JobId)
     local Blacklisted
     if isfile'TeleportAPINew.JSON' then
         local Content=readfile'TeleportAPINew.JSON'
@@ -136,7 +95,7 @@ function Env:CheckBlacklisted(JobId)
     end
 end
 
-function Env:JoinServer(PlaceId, Method, BlacklistTime, FastMode, FreeSlots)
+function Module:JoinServer(PlaceId, Method, BlacklistTime, FastMode, FreeSlots)
     if not PlaceId then
         PlaceId=game.PlaceId
     end
@@ -183,19 +142,4 @@ function Env:JoinServer(PlaceId, Method, BlacklistTime, FastMode, FreeSlots)
     end
 end
 
-if isfile'Ulisse/Env.lua' then
-    syn.queue_on_teleport(readfile'Ulisse/Env.lua')
-end
-
-if isfile'Ulisse/MaterialUI.lua' then
-    Env.MaterialUI=loadstring(readfile'Ulisse/MaterialUI.lua')()
-end
-
-if isfile'Ulisse/UI.lua' then
-    Env.UI=loadstring(readfile'Ulisse/UI.lua')()
-end
-
-LocalPlayer.Idled:Connect(function()
-    VirtualUser:CaptureController()
-    VirtualUser:ClickButton2(Vector2.new())
-end)
+return Module

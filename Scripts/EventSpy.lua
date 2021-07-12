@@ -20,6 +20,18 @@ SocketHandler.CurrentSocket=nil
 SocketHandler.MessageConnection=nil
 local LogNamecall=true
 
+shared.BlacklistNames={['UpdateCharJoints']=true}
+
+if (not shared.BlacklistNames) then
+    shared.BlacklistNames={}
+end
+
+local New={}
+for i,v in pairs(shared.BlacklistNames) do
+    New[string.lower(i)]=true
+end
+shared.BlacklistNames=New
+
 local BindEvent=Instance.new'BindableEvent'
 shared.BindEvent=BindEvent
 
@@ -233,14 +245,16 @@ end
 
 BindEvent.Event:Connect(function(This, Method, ...)
     if This:IsA'RemoteFunction' or This:IsA'RemoteEvent' then
-        local Args={...}
-        local Path=Format:FormatPath(This)
-        local NewArgs=Format:RecurseTable(Args)
-        warn(NewArgs)
-        if shared.UseServer then
-            SocketHandler.CurrentSocket:Send(string.format('%s:%s(%s)', Path, Method, NewArgs))
-        else
-            rconsoleprint(string.format('%s:%s(%s)\n', Path, Method, NewArgs))
+        if not shared.BlacklistNames[string.lower(This.Name)] then
+            local Args={...}
+            local Path=Format:FormatPath(This)
+            local NewArgs=Format:RecurseTable(Args)
+            warn(NewArgs)
+            if shared.UseServer then
+                SocketHandler.CurrentSocket:Send(string.format('%s:%s(%s)', Path, Method, NewArgs))
+            else
+                rconsoleprint(string.format('%s:%s(%s)\n', Path, Method, NewArgs))
+            end
         end
     elseif This:IsA'ClickDetector' then
         local Path=Format:FormatPath(This)
