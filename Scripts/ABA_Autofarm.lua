@@ -12,6 +12,9 @@ local RunService=game:service'RunService'
 local Stepped=RunService.Stepped
 local MainPrompt=CoreGui:FindFirstChild('promptOverlay', true)
 local LocalPlayer=Players.LocalPlayer
+if shared.AbaDebugMode then
+    syn.queue_on_teleport('shared.AbaDebugMode=true')
+end
 syn.queue_on_teleport(readfile'Ulisse/Scripts/ABA_Autofarm.lua')
 if not MainPrompt then
     repeat 
