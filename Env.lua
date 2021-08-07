@@ -16,11 +16,22 @@ end
 function Env:ClickButton(Obj)
     if Obj and Obj:IsA'GuiButton' then
         local Connections={}
-        self:InsertTable(Connections, getconnections(Obj.MouseButton1Down))
-        self:InsertTable(Connections, getconnections(Obj.MouseButton1Up))
-        self:InsertTable(Connections, getconnections(Obj.Activated))
+        if Obj.MouseButton1Click then
+            self:InsertTable(Connections, getconnections(Obj.MouseButton1Click))
+        end
+        if Obj.MouseButton1Down then
+            self:InsertTable(Connections, getconnections(Obj.MouseButton1Down))
+        end
+        if Obj.MouseButton1Up then
+            self:InsertTable(Connections, getconnections(Obj.MouseButton1Up))
+        end
+        if Obj.Activated then
+            self:InsertTable(Connections, getconnections(Obj.Activated))
+        end
         for i,v in ipairs(Connections) do
-            v:Fire()
+            if Obj and v then 
+                pcall(v.Fire, v)
+            end
         end
     end
 end
