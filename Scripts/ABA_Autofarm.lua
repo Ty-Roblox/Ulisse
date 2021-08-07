@@ -20,6 +20,145 @@ if not MainPrompt then
     until MainPrompt
 end
 
+local TeleportService=game:service'TeleportService'
+local HttpService=game:service'HttpService'
+local RunService=game:service'RunService'
+
+local Module={}
+
+function Module:GetServerPage(PlaceId, Cursor)
+    if not PlaceId then
+        PlaceId=game.PlaceId
+    end
+    local Request=syn.request({
+        Url=string.format('https://games.roblox.com/v1/games/%s/servers/Public?sortOrder=Asc&limit=100'..(Cursor and '&cursor=' .. Cursor or ''), tostring(PlaceId));
+        Method='GET';
+    })
+    if Request and Request.Success then
+        return HttpService:JSONDecode(Request.Body)
+    end
+end
+
+function Module:GetAllServers(PlaceId, FastMode)
+    local Servers={}
+    local Cursor
+    local Idx=0
+    while true do
+        local Page=self:GetServerPage(PlaceId, Cursor)
+        if Page and Page.data then
+            Idx+=1
+            for i,v in ipairs(Page.data) do
+                table.insert(Servers,v)
+            end
+            if FastMode and Idx>5 then
+                break
+            end
+            if Page.nextPageCursor then
+                Cursor=Page.nextPageCursor
+            else
+                break
+            end
+        else    
+            warn'??'
+            break
+        end
+        RunService.Heartbeat:Wait()
+    end
+    return Servers
+end
+
+function Module:BlacklistServer(JobId, Time)
+    local Blacklisted
+    if isfile'TeleportAPINew.JSON' then
+        local Content=readfile'TeleportAPINew.JSON'
+        Blacklisted=HttpService:JSONDecode(Content)
+    else
+        Blacklisted={}
+    end
+    table.insert(Blacklisted, {Time=os.time(), JobId=JobId})
+    writefile('TeleportAPINew.JSON', HttpService:JSONEncode(Blacklisted))
+end
+
+function Module:UpdateBlacklistTime(Time)
+    local Blacklisted
+    if isfile'TeleportAPINew.JSON' then
+        local Content=readfile'TeleportAPINew.JSON'
+        Blacklisted=HttpService:JSONDecode(Content)
+    else
+        Blacklisted={}
+    end
+    local Clean={}
+    local Changed=false
+    for i,v in ipairs(Blacklisted) do
+        if (os.time()-v.Time)<=Time then
+            table.insert(Clean, v)
+        else
+            warn'Removed for time'
+            Changed=true
+        end
+    end
+    if Changed then
+        writefile('TeleportAPINew.JSON', HttpService:JSONEncode(Clean))
+    end
+end
+
+function Module:CheckBlacklisted(JobId)
+    local Blacklisted
+    if isfile'TeleportAPINew.JSON' then
+        local Content=readfile'TeleportAPINew.JSON'
+        Blacklisted=HttpService:JSONDecode(Content)
+    else
+        Blacklisted={}
+    end
+    for i,v in ipairs(Blacklisted) do
+        if v and v.JobId and v.JobId==JobId then
+            return true
+        end
+    end
+end
+
+function Module:JoinServer(PlaceId, Method, BlacklistTime, FastMode, FreeSlots)
+    if not PlaceId then
+        PlaceId=game.PlaceId
+    end
+    if not Method then
+        Method='Asc'
+    end
+    if not BlacklistTime then
+        BlacklistTime=300
+    end
+    if not FastMode then
+        FastMode=false
+    end
+    if not FreeSlots then
+        FreeSlots=1
+    end
+    self:UpdateBlacklistTime(BlacklistTime)
+    local Servers=self:GetAllServers(PlaceId, FastMode)
+    local Filtered={}
+    for i,v in ipairs(Servers) do
+        if (not self:CheckBlacklisted(v.id)) and (v.playing+FreeSlots)<v.maxPlayers and v.id~=game.JobId then
+            table.insert(Filtered, v)
+        end
+    end
+    table.sort(Filtered,function(First,Second)
+        if Method=='Asc' then
+            return First.playing < Second.playing
+        else
+            return First.playing > Second.playing
+        end
+    end)
+    if Filtered[1] then
+        if not self:CheckBlacklisted(Filtered[1].id) then
+            print'Got'
+            self:BlacklistServer(Filtered[1].id, BlacklistTime)
+            TeleportService:TeleportToPlaceInstance(PlaceId, Filtered[1].id)
+        end
+    else
+        warn'Failed'
+    end
+end
+
 local function Debug(...)
     if shared.AbaDebugMode then
         pcall(OutputToConsole, string.format('[ULISSE ABA DEBUG] %s', ...))
@@ -41,50 +180,12 @@ local function GetServers(PlaceId, Cursor)
     end
     Debug('Pages failed')
 end
-local function GetSmallest()
-    local Servers={}
-    local Cursor
-    local iteration=0
-    repeat
-        local GotServers=GetServers(PlaceId, Cursor)
-        if GotServers and GotServers.data then
-            for i,v in ipairs(GotServers.data) do
-                table.insert(Servers, v)
-            end
-            Cursor = GotServers.nextPageCursor
-        else
-            Cursor=nil
-        end
-        warn(Cursor,iteration)
-        iteration+=1
-        Debug(string.format('Iteration: %d', iteration))
-    until not Cursor
-    Debug(string.format('Final: %s', Cursor))
-    local Server
-    local Lowest=1e5
-    for i,v in ipairs(Servers) do
-        if v.playing and v.playing>=1 and v.playing<Lowest then
-            Lowest=v.playing
-            Server=v
-        end
-    end
-    Debug('Done getting servers')
-    return Server, Lowest
-end
 
 local function CallTeleport()
+    Module:JoinServer(1458767429, 'Asc', 100, false, 8)
     local Server,Lowest=GetSmallest()
-    if Server and Server.id and Lowest then
-        Ulisse:SetColor'yellow'
-        Ulisse:PrintConsole(string.format('Joining Server: %s Playing: [%s]', Server.id, Lowest))
-        Ulisse:SetColor()
-        for I=1,5 do
-            pcall(TeleportService.TeleportToPlaceInstance, TeleportService, 1458767429, Server.id)
-            wait(1)
-        end
-    end
-    wait(2)
     Debug('Teleport called again')
+    wait(2)
     CallTeleport()
 end
 
@@ -159,7 +260,6 @@ end
 
 local function CheckPlayers()
     local Count=0
-    Debug('Player check called')
     for i,v in ipairs(Players:GetPlayers()) do
         if v~=LocalPlayer then
             local AFK=v:FindFirstChild'AFK'
