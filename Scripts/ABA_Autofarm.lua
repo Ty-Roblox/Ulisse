@@ -2,6 +2,7 @@ if shared.ABAFarmRan then
     return
 end
 shared.ABAFarmRan=true
+shared.AbaDebugMode=false
 local Players=game:service'Players'
 local HttpService=game:service'HttpService'
 local TeleportService=game:service'TeleportService'
@@ -20,7 +21,14 @@ if not MainPrompt then
     until MainPrompt
 end
 
+local function Debug(...)
+    if shared.AbaDebugMode then
+        pcall(OutputToConsole, string.format('[ULISSE ABA DEBUG] %s', ...))
+    end
+end
+
 local function GetServers(PlaceId, Cursor)
+    Debug('Requesting Pages')
     if not PlaceId then
         PlaceId=1458767429
     end
@@ -29,8 +37,10 @@ local function GetServers(PlaceId, Cursor)
         Method='GET';
     })
     if Request and Request.Success then
+        Debug('Got pages success')
         return HttpService:JSONDecode(Request.Body)
     end
+    Debug('Pages failed')
 end
 local function GetSmallest()
     local Servers={}
@@ -48,8 +58,9 @@ local function GetSmallest()
         end
         warn(Cursor,iteration)
         iteration+=1
+        Debug(string.format('Iteration: %d', iteration))
     until not Cursor
-    warn('Final',Cursor)
+    Debug(string.format('Final: %s', Cursor))
     local Server
     local Lowest=1e5
     for i,v in ipairs(Servers) do
@@ -58,6 +69,7 @@ local function GetSmallest()
             Server=v
         end
     end
+    Debug('Done getting servers')
     return Server, Lowest
 end
 
@@ -73,6 +85,7 @@ local function CallTeleport()
         end
     end
     wait(2)
+    Debug('Teleport called again')
     CallTeleport()
 end
 
@@ -81,6 +94,7 @@ MainPrompt.ChildAdded:Connect(function(Child)
         Ulisse:SetColor'red'
         Ulisse:PrintConsole'ErrorPrompt Found, Teleport called'
         Ulisse:SetColor()
+        Debug('Error prompt got')
         CallTeleport()
     end
 end)
@@ -94,6 +108,7 @@ if not LocalPlayer then
         Stepped:Wait()
     until LocalPlayer
 end
+Debug('Localplayer got')
 local PlayerGui=LocalPlayer.PlayerGui
 if not PlayerGui then
     repeat 
@@ -101,16 +116,20 @@ if not PlayerGui then
         Stepped:Wait()
     until PlayerGui
 end
+Debug('Playergui got')
 
 LocalPlayer.Idled:Connect(function()
     VirtualUser:CaptureController()
     VirtualUser:ClickButton2(Vector2.new())
+    Debug('Idle captured')
 end)
 
 local function Play()
     if LocalPlayer:FindFirstChild'Loaded' then
+        Debug('Loaded true')
         return
     end
+    Debug('Not loaded')
     local MainMenu=PlayerGui:WaitForChild'MainMenu'
     local PlayButton
     repeat
@@ -120,23 +139,28 @@ local function Play()
                 break
             end
         end
+        Debug('No playbutton')
         Stepped:Wait()
     until PlayButton
+    Debug('Got playbutton')
     if not PlayButton then
         Ulisse:SetColor'red'
         Ulisse:PrintConsole'PlayButton not found, err'
         Ulisse:SetColor()
         CallTeleport()
+        Debug('Button not found')
         return
     end
     repeat
         Ulisse:ClickButton(PlayButton) 
-        wait(.5)
+        wait(1)
+        Debug('Commit click button')
     until LocalPlayer:FindFirstChild'Loaded'
 end
 
 local function CheckPlayers()
     local Count=0
+    Debug('Player check called')
     for i,v in ipairs(Players:GetPlayers()) do
         if v~=LocalPlayer then
             local AFK=v:FindFirstChild'AFK'
@@ -145,6 +169,7 @@ local function CheckPlayers()
             end
         end
     end
+    Debug('Done checking players')
     if Count>1 then
         Ulisse:PrintConsole('Non AFK Players: '..tostring(Count)..'>1')
         CallTeleport()
@@ -156,6 +181,7 @@ local function CheckMoney()
     local CurrentMoney=0
     local MoneyLabel=HUD:WaitForChild'Money'
     if MoneyLabel then
+        Debug('Got moolah')
         local Money=tonumber(MoneyLabel.Text:sub(2))
         if Money then
             CurrentMoney=Money
@@ -165,6 +191,7 @@ local function CheckMoney()
     wait(45)
     local MoneyLabel=HUD:WaitForChild'Money'
     if MoneyLabel then
+        Debug('Got moolah 2')
         local Money=tonumber(MoneyLabel.Text:sub(2))
         if Money then
             if Money>CurrentMoney then
@@ -184,6 +211,7 @@ end
 
 if game.PlaceId==5411459567 then
     CallTeleport()
+    Debug('afk world got, teleporting')
 end
 Play()
 coroutine.wrap(CheckMoney)()
@@ -193,14 +221,17 @@ while true do
     if HUD then
         local AFK=LocalPlayer:FindFirstChild'AFK'
         if AFK and (not AFK.Value) then
+            Debug('Click button called cuz afk yes')
             local AFKButton=HUD:WaitForChild('AFK',3)
             Ulisse:ClickButton(AFKButton)
             wait(.5)
         end
     end
+    Debug('Checking players')
     coroutine.wrap(CheckPlayers)()
     local Voting=PlayerGui:FindFirstChild'Voting'
     if Voting then
+        Debug('voting found')
         local Mode1=Voting:FindFirstChild'mode1'
         local Mode2=Voting:FindFirstChild'mode2'
         if Mode1 and Mode2 then
@@ -210,10 +241,13 @@ while true do
                 if TL1.Text=='Lives' then
                     wait(.5)
                     Ulisse:ClickButton(TL1)
+                    Debug('Button 1 lives clicked')
                 elseif TL2.Text=='Lives' then
                     wait(.5)
                     Ulisse:ClickButton(TL2)
+                    Debug('Button 2 lives clicked')
                 else
+                    Debug('No lives :(')
                     Ulisse:SetColor'red'
                     Ulisse:PrintConsole'Lives gamemode not found, teleporting.'
                     Ulisse:SetColor()
@@ -222,5 +256,6 @@ while true do
             end
         end
     end
+    Debug('Looping')
     wait(1)
 end
