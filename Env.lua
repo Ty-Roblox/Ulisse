@@ -16,7 +16,6 @@ end
 function Env:ClickButton(Obj)
     if Obj and Obj:IsA'GuiButton' then
         local Connections={}
-        self:InsertTable(Connections, getconnections(Obj.MouseButton1Click))
         self:InsertTable(Connections, getconnections(Obj.MouseButton1Down))
         self:InsertTable(Connections, getconnections(Obj.MouseButton1Up))
         self:InsertTable(Connections, getconnections(Obj.Activated))
