@@ -2,13 +2,13 @@ if shared.ABAFarmRan then
     return
 end
 shared.ABAFarmRan=true
-local Players=game:service'Players'
-local HttpService=game:service'HttpService'
-local TeleportService=game:service'TeleportService'
-local ReplicatedStorage=game:service'ReplicatedStorage'
-local VirtualUser=game:service'VirtualUser'
-local CoreGui=game:service'CoreGui'
-local RunService=game:service'RunService'
+local Players=game:GetService'Players'
+local HttpService=game:GetService'HttpService'
+local TeleportService=game:GetService'TeleportService'
+local ReplicatedStorage=game:GetService'ReplicatedStorage'
+local VirtualUser=game:GetService'VirtualUser'
+local CoreGui=game:GetService'CoreGui'
+local RunService=game:GetService'RunService'
 local Stepped=RunService.Stepped
 local MainPrompt=CoreGui:FindFirstChild('promptOverlay', true)
 local LocalPlayer=Players.LocalPlayer
@@ -22,10 +22,6 @@ if not MainPrompt then
         Stepped:Wait()
     until MainPrompt
 end
-
-local TeleportService=game:service'TeleportService'
-local HttpService=game:service'HttpService'
-local RunService=game:service'RunService'
 
 local Module={}
 
@@ -212,13 +208,7 @@ if not LocalPlayer then
     until LocalPlayer
 end
 Debug('Localplayer got')
-local PlayerGui=LocalPlayer.PlayerGui
-if not PlayerGui then
-    repeat 
-        PlayerGui=LocalPlayer.PlayerGui
-        Stepped:Wait()
-    until PlayerGui
-end
+local PlayerGui=LocalPlayer:WaitForChild'PlayerGui'
 Debug('Playergui got')
 
 LocalPlayer.Idled:Connect(function()
@@ -282,41 +272,38 @@ local function CheckMoney()
     local HUD=PlayerGui:WaitForChild'HUD'
     local CurrentMoney=0
     local MoneyLabel=HUD:WaitForChild'Money'
-    if MoneyLabel then
-        Debug('Got moolah')
-        local Money=tonumber(MoneyLabel.Text:sub(2))
-        if Money then
-            CurrentMoney=Money
-            Ulisse:PrintConsole(string.format('Current Money: %i',Money))
-        end
+    Debug('Got moolah')
+    local Money=tonumber(MoneyLabel.Text:sub(2))
+    if Money then
+	CurrentMoney=Money
+	Ulisse:PrintConsole(string.format('Current Money: %i',Money))
     end
-    wait(45)
+    task.wait(45)
     local MoneyLabel=HUD:WaitForChild'Money'
-    if MoneyLabel then
-        Debug('Got moolah 2')
-        local Money=tonumber(MoneyLabel.Text:sub(2))
-        if Money then
-            if Money>CurrentMoney then
-                Ulisse:SetColor'green'
-                Ulisse:PrintConsole(string.format('Money After 45: %i',Money))
-                Ulisse:SetColor()
-                return
-            else
-                Ulisse:SetColor'red'
-                Ulisse:PrintConsole'Money unchanged after 45 seconds, hopping'
-                Ulisse:SetColor()
-                CallTeleport()
-            end
-        end
+    Debug('Got moolah 2')
+    local Money=tonumber(MoneyLabel.Text:sub(2))
+    if Money then
+	if Money>CurrentMoney then
+		Ulisse:SetColor'green'
+		Ulisse:PrintConsole(string.format('Money After 45: %i',Money))
+		Ulisse:SetColor()
+		return
+	else
+		Ulisse:SetColor'red'
+		Ulisse:PrintConsole'Money unchanged after 45 seconds, hopping'
+		Ulisse:SetColor()
+		CallTeleport()
+	end
     end
 end
 
 if game.PlaceId==5411459567 then
     CallTeleport()
     Debug('afk world got, teleporting')
+    return
 end
 Play()
-coroutine.wrap(CheckMoney)()
+task.spawn(CheckMoney)
 
 while true do
     local HUD=PlayerGui:FindFirstChild'HUD'
@@ -326,11 +313,11 @@ while true do
             Debug('Click button called cuz afk yes')
             local AFKButton=HUD:WaitForChild('AFK',3)
             Ulisse:ClickButton(AFKButton)
-            wait(.5)
+            task.wait(.5)
         end
     end
     Debug('Checking players')
-    coroutine.wrap(CheckPlayers)()
+    task.spawn(CheckPlayers)
     local Voting=PlayerGui:FindFirstChild'Voting'
     if Voting then
         Debug('voting found')
@@ -341,11 +328,11 @@ while true do
             local TL2=Mode2:FindFirstChild'TextLabel'
             if TL1 and TL2 then
                 if TL1.Text=='Lives' then
-                    wait(.5)
+                    task.wait(.5)
                     Ulisse:ClickButton(TL1)
                     Debug('Button 1 lives clicked')
                 elseif TL2.Text=='Lives' then
-                    wait(.5)
+                    task.wait(.5)
                     Ulisse:ClickButton(TL2)
                     Debug('Button 2 lives clicked')
                 else
@@ -359,5 +346,5 @@ while true do
         end
     end
     Debug('Looping')
-    wait(1)
+    task.wait(1)
 end
