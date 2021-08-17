@@ -4,8 +4,8 @@ end
 if not game:IsLoaded() then
 	game.Loaded:Wait()
 end
-local HttpService=game:service'HttpService'
-local AssetService=game:service'AssetService'
+local HttpService=game:GetService'HttpService'
+local AssetService=game:GetService'AssetService'
 local RawServer='https://raw.githubusercontent.com'
 local Repo='Ty-Roblox/Ulisse'
 local Branch='main'
@@ -257,7 +257,7 @@ local function Start()
     else
         LoadFiles()
         Load()
-    end    
+    end
 end
 
 Start()
