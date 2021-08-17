@@ -2,9 +2,9 @@ getgenv().Ulisse={}
 local Env=getgenv().Ulisse
 local Players=game:GetService'Players'
 local VirtualUser=game:GetService'VirtualUser'
-local TeleportService=game:service'TeleportService'
-local HttpService=game:service'HttpService'
-local RunService=game:service'RunService'
+local TeleportService=game:GetService'TeleportService'
+local HttpService=game:GetService'HttpService'
+local RunService=game:GetService'RunService'
 local LocalPlayer=Players.LocalPlayer or Players.PlayerAdded:Wait()
 
 function Env:InsertTable(Table1, Table2)
@@ -29,7 +29,7 @@ function Env:ClickButton(Obj)
             self:InsertTable(Connections, getconnections(Obj.Activated))
         end
         for i,v in ipairs(Connections) do
-            if Obj and v then 
+            if v and v.Fire then 
                 pcall(v.Fire, v)
             end
         end
@@ -147,50 +147,48 @@ function Env:CheckBlacklisted(JobId)
 end
 
 function Env:JoinServer(PlaceId, Method, BlacklistTime, FastMode, FreeSlots)
-    if not PlaceId then
-        PlaceId=game.PlaceId
-    end
-    if not Method then
-        Method='Asc'
-    end
-    if not BlacklistTime then
-        BlacklistTime=300
-    end
-    if not FastMode then
-        FastMode=false
-    end
-    if not FreeSlots then
-        FreeSlots=1
-    end
-    self:UpdateBlacklistTime(BlacklistTime)
-    local Servers=self:GetAllServers(PlaceId, FastMode)
-    local Filtered={}
-    for i,v in ipairs(Servers) do
-        if (not self:CheckBlacklisted(v.id)) and v.playing and (v.playing+FreeSlots)<v.maxPlayers and v.id~=game.JobId then
-            table.insert(Filtered, v)
-        end
-    end
-    table.sort(Filtered,function(First,Second)
-        if Method=='Asc' then
-            return First.playing < Second.playing
-        else
-            return First.playing > Second.playing
-        end
-    end)
-    if Filtered[1] then
-        if not self:CheckBlacklisted(Filtered[1].id) then
-            self:BlacklistServer(Filtered[1].id, BlacklistTime)
-			local Success,Return = pcall(function()
-			    TeleportService:TeleportToPlaceInstance(PlaceId, Filtered[1].id)
-			end)
+	if not PlaceId then
+		PlaceId=game.PlaceId
+	end
+	if not Method then
+		Method='Asc'
+	end
+	if not BlacklistTime then
+		BlacklistTime=300
+	end
+	if not FastMode then
+		FastMode=false
+	end
+	if not FreeSlots then
+		FreeSlots=1
+	end
+	self:UpdateBlacklistTime(BlacklistTime)
+	local Servers=self:GetAllServers(PlaceId, FastMode)
+	local Filtered={}
+	for i,v in ipairs(Servers) do
+		if (not self:CheckBlacklisted(v.id)) and v.playing and (v.playing+FreeSlots)<v.maxPlayers and v.id~=game.JobId then
+			table.insert(Filtered, v)
+		end
+	end
+	table.sort(Filtered,function(First,Second)
+		if Method=='Asc' then
+			return First.playing < Second.playing
+		else
+			return First.playing > Second.playing
+		end
+	end)
+	if Filtered[1] then
+		if not self:CheckBlacklisted(Filtered[1].id) then
+			self:BlacklistServer(Filtered[1].id, BlacklistTime)
+			local Success, Ret = pcall(TeleportService.TeleportToPlaceInstance, TeleportService, PlaceId, Filtered[1].id)
 			if not Success then
 				wait()
 				self:JoinServer(PlaceId, Method, BlacklistTime, FastMode, FreeSlots)
 			end
-        end
-    else
-        warn'Failed'
-    end
+		end
+	else
+		warn'Failed'
+	end
 end
 
 if isfile'Ulisse/Env.lua' then
