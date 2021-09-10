@@ -10,9 +10,9 @@ local LocalPlayer=Players.LocalPlayer or Players.PlayerAdded:Wait()
 function Env:ClickButton(Obj)
 	if Obj and Obj:IsA'GuiButton' then
 		firesignal(Obj.MouseButton1Click)
-		firesignal(Obj.MouseButton1Down)
+		--[[firesignal(Obj.MouseButton1Down)
 		firesignal(Obj.MouseButton1Up)
-		firesignal(Obj.Activated)
+		firesignal(Obj.Activated)]]
 	end
 end
 
