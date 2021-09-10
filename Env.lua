@@ -6,36 +6,13 @@ local TeleportService=game:GetService'TeleportService'
 local HttpService=game:GetService'HttpService'
 local RunService=game:GetService'RunService'
 local LocalPlayer=Players.LocalPlayer or Players.PlayerAdded:Wait()
-local function InsertTableNew(Tabl1, Tabl2)
-	for _, Signal in ipairs(Tabl1)do
-		table.insert(Tabl2, Signal)
-	end
-end
 
 function Env:ClickButton(Obj)
 	if Obj and Obj:IsA'GuiButton' then
-		local Connections={}
-		local Cons = {getconnections(Obj.MouseButton1Click),
-			getconnections(Obj.MouseButton1Down),
-			getconnections(Obj.MouseButton1Up),
-			getconnections(Obj.Activated)}
-		if #Cons[1] > 0 then
-			InsertTableNew(Cons[1], Connections)
-		end
-		if #Cons[2] > 0 then
-			InsertTableNew(Cons[2], Connections)
-		end
-		if #Cons[3] > 0 then
-			InsertTableNew(Cons[3], Connections)
-		end
-		if #Cons[4] > 0 then
-			InsertTableNew(Cons[4], Connections)
-		end
-		for _,Signal in ipairs(Connections) do
-			if Signal and Signal.Fire then 
-				pcall(Signal.Fire, Signal)
-			end
-		end
+		firesignal(Obj.MouseButton1Click)
+		firesignal(Obj.MouseButton1Down)
+		firesignal(Obj.MouseButton1Up)
+		firesignal(Obj.Activated)
 	end
 end
 
